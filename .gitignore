@@ -1,0 +1,14 @@
+# dependencies
+node_modules/
+.npm/
+
+# test / tooling artefacts
+.arena/
+.cache/
+.pytest_cache/
+playwright-report/
+test-results/
+
+# OS noise
+.DS_Store
+Thumbs.db

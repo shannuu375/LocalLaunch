@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LocalLaunch — Turn Your Small Idea Into a Business</title>
+<meta name="description" content="LocalLaunch helps students and first-time founders discover affordable startup ideas, plan a budget, and take the first step toward entrepreneurship." />
+<meta name="theme-color" content="#7c3aed" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%237c3aed'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3ELL%3C/text%3E%3C/svg%3E" />
+<style>
+/* ============================================================
+   LocalLaunch — design tokens
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --ink:#1a1440; --ink-soft:#3b3466; --muted:#615d89;
+  --line:#e9e6f7; --line-strong:#dcd7f2;
+  --bg:#fcfbff; --white:#ffffff;
+
+  --p-50:#f6f4ff; --p-100:#ece8ff; --p-200:#ded6ff; --p-400:#a78bfa; --p-500:#8b5cf6; --p-600:#7c3aed; --p-700:#6023c4;
+  --b-50:#eef5ff; --b-100:#dbeafe; --b-200:#bfdbfe; --b-500:#3b82f6; --b-600:#2563eb;
+  --mint:#0f9b6c; --mint-bg:#e7fbf2; --mint-line:#b7eed8;
+  --amber:#b96a06; --amber-bg:#fff6e5; --amber-line:#ffe0ab;
+  --rose:#d81b52; --rose-bg:#ffeff3; --rose-line:#ffd0dd;
+  --cyan:#0891b2;
+
+  --grad:linear-gradient(135deg,#7c3aed 0%,#5b6cf9 55%,#2563eb 100%);
+  --grad-warm:linear-gradient(135deg,#f472b6 0%,#a78bfa 100%);
+  --grad-soft:linear-gradient(135deg,#f6f4ff 0%,#eef5ff 100%);
+
+  --shadow-xs:0 1px 3px rgba(38,22,92,.07);
+  --shadow-sm:0 4px 14px -6px rgba(38,22,92,.16);
+  --shadow:0 20px 44px -28px rgba(38,22,92,.42);
+  --shadow-lg:0 44px 90px -40px rgba(28,14,78,.55);
+
+  --r-xs:10px; --r-sm:14px; --r:20px; --r-lg:28px;
+  --nav-h:74px;
+  --ease:cubic-bezier(.22,.68,0,1);
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif,
+              "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Noto Emoji";
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;display:block}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{line-height:1.14;letter-spacing:-.025em;margin:0;font-weight:800;color:var(--ink)}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+::selection{background:#ded6ff;color:#2a1470}
+:focus-visible{outline:3px solid #a78bfa;outline-offset:2px;border-radius:8px}
+
+.wrap{width:min(1180px,100% - 2.4rem);margin-inline:auto}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-999px;top:0;z-index:200;background:#fff;padding:.7rem 1rem;border-radius:0 0 12px 0;box-shadow:var(--shadow)}
+.skip:focus{left:0}
+
+/* ============================== buttons ============================== */
+.btn{
+  --btn-bg:#fff;
+  display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+  padding:.82rem 1.3rem;border-radius:999px;border:1px solid transparent;
+  font-weight:700;font-size:.95rem;letter-spacing:-.01em;cursor:pointer;
+  background:var(--btn-bg);transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .2s,border-color .2s,color .2s;
+  white-space:nowrap;
+}
+.btn:active{transform:translateY(0) scale(.985)}
+.btn .ic{font-size:1.05em;line-height:1}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 14px 30px -14px rgba(93,60,214,.85)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 22px 38px -14px rgba(93,60,214,.9)}
+.btn-ghost{background:#fff;border-color:var(--line-strong);color:var(--ink-soft);box-shadow:var(--shadow-xs)}
+.btn-ghost:hover{transform:translateY(-2px);border-color:var(--p-400);color:var(--p-700);box-shadow:var(--shadow-sm)}
+.btn-soft{background:var(--p-50);color:var(--p-700);border-color:#e3ddff}
+.btn-soft:hover{background:var(--p-100);transform:translateY(-2px)}
+.btn-dark{background:#1c1546;color:#fff}
+.btn-dark:hover{background:#2a1f66;transform:translateY(-2px)}
+.btn-sm{padding:.55rem .95rem;font-size:.85rem}
+.btn-lg{padding:1rem 1.7rem;font-size:1.02rem}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none}
+
+/* ============================== navbar ============================== */
+.nav{
+  position:sticky;top:0;z-index:70;
+  background:rgba(255,255,255,.82);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);
+  backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{display:flex;align-items:center;gap:.8rem;height:var(--nav-h)}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.14rem;letter-spacing:-.03em;flex:none}
+.brand-mark{
+  width:40px;height:40px;border-radius:13px;background:var(--grad);
+  display:grid;place-items:center;box-shadow:0 10px 22px -10px rgba(93,60,214,.9);flex:none;
+}
+.brand-mark svg{width:22px;height:22px}
+.brand small{display:block;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--p-600);line-height:1.4}
+.nav-links{display:flex;align-items:center;gap:.12rem;margin-left:auto}
+.nav-link{
+  position:relative;padding:.5rem .78rem;border-radius:999px;font-weight:650;font-size:.92rem;
+  color:var(--ink-soft);transition:background .2s,color .2s;white-space:nowrap;
+}
+.nav-link:hover{background:var(--p-50);color:var(--p-700)}
+.nav-link.active{color:var(--p-700);background:var(--p-100)}
+.nav-actions{display:flex;align-items:center;gap:.5rem;flex:none}
+.burger{
+  display:none;width:44px;height:44px;border-radius:13px;border:1px solid var(--line-strong);
+  background:#fff;cursor:pointer;padding:0;place-items:center;
+}
+.burger span{display:block;width:19px;height:2px;background:var(--ink);border-radius:2px;transition:transform .3s var(--ease),opacity .2s}
+.burger span+span{margin-top:4px}
+.nav.menu-open .burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav.menu-open .burger span:nth-child(2){opacity:0}
+.nav.menu-open .burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+@media (max-width:1000px){
+  .burger{display:grid}
+  .nav-cta{display:none}
+  .nav-links{
+    position:absolute;left:0;right:0;top:var(--nav-h);
+    flex-direction:column;align-items:stretch;gap:.25rem;
+    background:#fff;border-bottom:1px solid var(--line);
+    padding:.9rem 1.2rem 1.3rem;box-shadow:0 26px 40px -30px rgba(30,16,80,.5);
+    display:none;
+  }
+  .nav.menu-open .nav-links{display:flex;animation:dropIn .28s var(--ease)}
+  .nav-link{padding:.8rem 1rem;font-size:1rem}
+  .nav-mobile-cta{display:flex!important;margin-top:.5rem}
+}
+.nav-mobile-cta{display:none}
+@keyframes dropIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+
+/* ============================== layout helpers ============================== */
+.page{padding-bottom:0;animation:pageIn .45s var(--ease)}
+.page[hidden]{display:none}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.section{padding:clamp(2.6rem,6vw,4.6rem) 0}
+.section-tight{padding:clamp(1.8rem,4vw,2.8rem) 0}
+.section-head{max-width:44rem;margin-bottom:clamp(1.4rem,3vw,2.2rem)}
+.section-head.center{margin-inline:auto;text-align:center}
+.section-head.row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;max-width:none;flex-wrap:wrap}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:.45rem;background:var(--p-50);border:1px solid #e5dfff;
+  color:var(--p-700);border-radius:999px;padding:.34rem .85rem;font-size:.78rem;font-weight:800;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.section-head h2{font-size:clamp(1.6rem,3.6vw,2.35rem);margin:1rem 0 .6rem}
+.section-head p{color:var(--muted);font-size:1.03rem}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.muted{color:var(--muted)}
+.grid{display:grid;gap:1.15rem}
+.g-2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.g-3{grid-template-columns:repeat(auto-fit,minmax(265px,1fr))}
+.g-4{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))}
+.ideas-grid{display:grid;gap:1.15rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+
+/* ============================== cards ============================== */
+.card{
+  position:relative;display:flex;flex-direction:column;gap:.85rem;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);
+  padding:1.25rem;box-shadow:var(--shadow-xs);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s;
+}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:#ddd5ff}
+.card-flat:hover{transform:none;box-shadow:var(--shadow-xs);border-color:var(--line)}
+.card h3{font-size:1.09rem}
+.card-top{display:flex;align-items:flex-start;gap:.85rem}
+.icon-tile{
+  width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:1.5rem;flex:none;
+  background:var(--grad-soft);border:1px solid #ece8ff;
+}
+.icon-tile.lg{width:60px;height:60px;font-size:1.75rem;border-radius:19px}
+.tile-emoji{filter:saturate(1.05)}
+.card-meta{display:grid;gap:.42rem;font-size:.885rem;color:var(--muted)}
+.meta-row{display:flex;gap:.5rem;align-items:flex-start;line-height:1.5}
+.meta-row b{color:var(--ink-soft);font-weight:700}
+.meta-ic{flex:none;width:1.1rem;text-align:center}
+.card-foot{margin-top:auto;display:flex;align-items:center;gap:.55rem;padding-top:.35rem}
+.push{margin-left:auto}
+.hr{height:1px;background:var(--line);border:0;margin:.2rem 0}
+.tile-link{display:flex;align-items:center;gap:.4rem;font-weight:750;color:var(--p-700);font-size:.9rem}
+.tile-link:hover{gap:.65rem}
+
+.badge{
+  display:inline-flex;align-items:center;gap:.32rem;border-radius:999px;
+  padding:.24rem .62rem;font-size:.74rem;font-weight:800;letter-spacing:.01em;
+  border:1px solid transparent;white-space:nowrap;
+}
+.b-beginner{background:var(--mint-bg);color:var(--mint);border-color:var(--mint-line)}
+.b-intermediate{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-line)}
+.b-advanced{background:var(--rose-bg);color:var(--rose);border-color:var(--rose-line)}
+.b-online{background:var(--b-50);color:var(--b-600);border-color:var(--b-200)}
+.b-offline{background:#fff4ed;color:#c2410c;border-color:#ffd9c2}
+.b-hybrid{background:var(--p-50);color:var(--p-700);border-color:var(--p-200)}
+.b-soft{background:#f5f4fb;color:var(--ink-soft);border-color:var(--line)}
+.b-gold{background:linear-gradient(135deg,#fff7e2,#ffeccd);color:#a25b00;border-color:#ffe0ab}
+.chips{display:flex;flex-wrap:wrap;gap:.34rem}
+.chip{background:#f7f6fd;border:1px solid #eceafa;border-radius:999px;padding:.2rem .62rem;font-size:.74rem;font-weight:650;color:var(--ink-soft)}
+.chip.accent{background:var(--p-50);border-color:#e5dfff;color:var(--p-700)}
+.chip.pick{background:var(--p-100);border-color:var(--p-400);color:var(--p-700)}
+button.chip{cursor:pointer;transition:.2s}
+button.chip:hover{background:var(--p-100);border-color:var(--p-400);color:var(--p-700)}
+.chip.pick:hover{background:#e3dcff}
+
+.quote{border-left:3px solid var(--p-200);padding-left:.9rem;color:var(--ink-soft);font-style:italic}
+
+/* ============================== hero ============================== */
+.hero{position:relative;overflow:hidden;padding:clamp(2.2rem,5vw,4.2rem) 0 clamp(3rem,6vw,5rem)}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.62}
+.blob.b1{width:460px;height:460px;background:radial-gradient(circle at 30% 30%,#c4b5fd,#8b5cf6 70%);top:-160px;left:-120px;animation:float1 16s ease-in-out infinite}
+.blob.b2{width:420px;height:420px;background:radial-gradient(circle at 30% 30%,#bfdbfe,#3b82f6 72%);top:-40px;right:-130px;animation:float2 19s ease-in-out infinite}
+.blob.b3{width:360px;height:360px;background:radial-gradient(circle at 30% 30%,#fbcfe8,#f472b6 72%);bottom:-190px;left:32%;opacity:.4;animation:float1 22s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(28px,34px,0) scale(1.07)}}
+@keyframes float2{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-30px,26px,0) scale(1.05)}}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.06fr .94fr;gap:clamp(2rem,4vw,3.2rem);align-items:center}
+.hero h1{font-size:clamp(2.15rem,5.1vw,3.55rem);margin:1.15rem 0 0;letter-spacing:-.038em}
+.hero-sub{color:var(--muted);font-size:clamp(1rem,1.9vw,1.16rem);max-width:35rem;margin:1.05rem 0 1.8rem}
+.hero-actions{display:flex;flex-wrap:wrap;gap:.85rem}
+.hero-trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:1rem 1.25rem;margin-top:2.1rem;padding-top:1.5rem;border-top:1px dashed var(--line-strong)}
+.trust b{display:block;font-size:1.22rem;letter-spacing:-.03em}
+.trust span{font-size:.8rem;color:var(--muted);font-weight:600;display:block;line-height:1.4}
+
+.hero-art{position:relative;min-height:390px;padding:18px 14px}
+.snapshot{
+  position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:1.3rem;box-shadow:var(--shadow-lg);animation:floatUp 7s ease-in-out infinite;
+}
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+.snapshot-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1.05rem}
+.snap-row{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.62rem .75rem;border-radius:14px;background:#faf9ff;border:1px solid #f0edfc;margin-bottom:.5rem;font-size:.88rem}
+.snap-row b{font-weight:750}
+.ring{
+  --v:92;
+  width:76px;height:76px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:conic-gradient(#7c3aed calc(var(--v) * 1%),#ece8ff 0);position:relative;
+}
+.ring::after{content:"";position:absolute;inset:7px;border-radius:50%;background:#fff}
+.ring span{position:relative;z-index:1;font-weight:800;font-size:.95rem}
+.float-chip{
+  position:absolute;z-index:3;background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:.6rem .88rem;font-size:.82rem;font-weight:750;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:.45rem;white-space:nowrap;
+}
+.float-chip.c1{top:-16px;left:2%;animation:floatUp 6s ease-in-out infinite}
+.float-chip.c2{bottom:-18px;left:-10px;animation:floatUp 7.5s ease-in-out .6s infinite}
+.float-chip.c3{bottom:-15px;right:7%;animation:floatUp 8.5s ease-in-out .3s infinite}
+.bars{display:flex;align-items:flex-end;gap:.45rem;height:66px;padding:.4rem .2rem 0}
+.bars i{flex:1;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,#a78bfa,#6366f1);animation:grow 1.4s var(--ease) both}
+.bars i:nth-child(2){animation-delay:.1s}.bars i:nth-child(3){animation-delay:.2s}
+.bars i:nth-child(4){animation-delay:.3s}.bars i:nth-child(5){animation-delay:.4s}
+.bars i:nth-child(6){animation-delay:.5s}.bars i:nth-child(7){animation-delay:.6s}
+@keyframes grow{from{height:6px!important;opacity:.35}to{opacity:1}}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-art{min-height:0;order:2}
+  .hero-trust{grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem 1rem}
+}
+
+/* ============================== category / step cards ============================== */
+.cat-card{cursor:pointer;text-align:left;border-radius:var(--r);border:1px solid var(--line);background:#fff;padding:1.35rem;box-shadow:var(--shadow-xs);transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s;position:relative;overflow:hidden;font:inherit}
+.cat-card::after{content:"";position:absolute;inset:auto -30% -60% auto;width:150px;height:150px;border-radius:50%;background:var(--grad-soft);opacity:0;transition:opacity .35s}
+.cat-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:#ddd5ff}
+.cat-card:hover::after{opacity:.9}
+.cat-card .icon-tile{margin-bottom:.9rem;position:relative;z-index:1}
+.cat-card h3{font-size:1.05rem;margin-bottom:.35rem;position:relative;z-index:1}
+.cat-card p{font-size:.9rem;color:var(--muted);position:relative;z-index:1}
+.cat-card .tile-link{margin-top:.85rem;position:relative;z-index:1;display:inline-flex}
+
+.step-card{display:flex;gap:1rem;align-items:flex-start}
+.step-num{width:44px;height:44px;border-radius:14px;background:var(--grad);color:#fff;font-weight:800;display:grid;place-items:center;flex:none;box-shadow:0 10px 22px -12px rgba(93,60,214,.9)}
+
+/* ============================== stat band ============================== */
+.band{
+  background:var(--grad);border-radius:var(--r-lg);padding:clamp(1.6rem,4vw,2.6rem);
+  color:#fff;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;
+  box-shadow:0 40px 70px -40px rgba(60,30,160,.8);position:relative;overflow:hidden;
+}
+.band::after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.14);top:-160px;right:-90px}
+.band .stat b{display:block;font-size:clamp(1.7rem,3.4vw,2.3rem);letter-spacing:-.04em}
+.band .stat span{font-size:.88rem;opacity:.86;font-weight:600}
+
+/* ============================== forms ============================== */
+.field{display:grid;gap:.4rem}
+.field>label,.flabel{font-size:.85rem;font-weight:750;color:var(--ink-soft);letter-spacing:-.005em}
+.hint{font-size:.78rem;color:var(--muted);line-height:1.45}
+.input,.select,.textarea{
+  width:100%;padding:.76rem .9rem;border-radius:var(--r-sm);border:1px solid var(--line-strong);
+  background:#fcfbff;transition:border-color .2s,box-shadow .2s,background .2s;font-size:.95rem;
+}
+.textarea{min-height:110px;resize:vertical}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--p-400);background:#fff;box-shadow:0 0 0 4px rgba(139,92,246,.16)}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23615d89' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center;padding-right:2.2rem;cursor:pointer}
+.input-wrap{position:relative}
+.input-wrap .rupee{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700;font-size:.92rem}
+.input-wrap .input{padding-left:1.9rem}
+.form-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+.filters{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));align-items:end}
+.filter-bar{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1.05rem;box-shadow:var(--shadow-sm)}
+
+/* ============================== planner ============================== */
+.planner-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:1.3rem;align-items:start}
+.result-card{position:sticky;top:calc(var(--nav-h) + 16px)}
+.metric{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem;padding:.6rem 0;border-bottom:1px dashed var(--line)}
+.metric:last-of-type{border-bottom:0}
+.metric span{font-size:.88rem;color:var(--muted);font-weight:600}
+.metric b{font-size:1.02rem;letter-spacing:-.02em}
+.big-number{font-size:clamp(1.9rem,4vw,2.5rem);letter-spacing:-.045em;font-weight:800}
+.alloc-bar{display:flex;height:14px;border-radius:999px;overflow:hidden;background:#f1effb;border:1px solid var(--line)}
+.alloc-bar i{display:block;height:100%;transition:width .55s var(--ease)}
+.alloc-legend{display:flex;flex-wrap:wrap;gap:.5rem 1rem;font-size:.8rem;color:var(--muted);font-weight:650}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:.35rem}
+.presets{display:flex;flex-wrap:wrap;gap:.5rem}
+.preset{border:1px dashed var(--line-strong);background:#fff;border-radius:999px;padding:.42rem .85rem;font-size:.82rem;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:.2s}
+.preset:hover{border-color:var(--p-400);color:var(--p-700);background:var(--p-50)}
+.tips{display:grid;gap:.55rem}
+.tip{display:flex;gap:.6rem;align-items:flex-start;font-size:.88rem;color:var(--ink-soft);background:#fbfaff;border:1px solid var(--line);border-radius:14px;padding:.62rem .8rem}
+
+/* ============================== guide accordion ============================== */
+.steps{display:grid;gap:.85rem}
+.step{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-xs);transition:border-color .25s,box-shadow .25s}
+.step.open{border-color:#ddd5ff;box-shadow:var(--shadow)}
+.step-head{display:flex;align-items:center;gap:1rem;width:100%;background:none;border:0;padding:1.05rem 1.15rem;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:0}
+.step-head h3{font-size:1.03rem}
+.step-head p{font-size:.86rem;color:var(--muted)}
+.chev{margin-left:auto;flex:none;color:var(--p-600);transition:transform .3s var(--ease)}
+.step.open .chev{transform:rotate(180deg)}
+.step-body{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+.step.open .step-body{max-height:760px}
+.step-body-inner{padding:0 1.15rem 1.25rem 1.15rem;display:grid;gap:.9rem}
+@media (max-width:520px){.step-body-inner,.modal-body{padding-inline:.95rem}.step-head{padding:.95rem;gap:.7rem}.step-num{width:38px;height:38px;border-radius:12px;font-size:.95rem}}
+.check{display:flex;gap:.6rem;align-items:flex-start;font-size:.9rem;color:var(--ink-soft);cursor:pointer;padding:.5rem .65rem;border-radius:12px;transition:background .2s}
+.check:hover{background:var(--p-50)}
+.check input{margin-top:.32rem;accent-color:#7c3aed;width:16px;height:16px;flex:none}
+.check input:checked+span{color:var(--muted);text-decoration:line-through}
+.progress{height:10px;border-radius:999px;background:#f1effb;overflow:hidden;border:1px solid var(--line)}
+.progress>span{display:block;height:100%;width:0;background:var(--grad);transition:width .5s var(--ease)}
+.tool-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+
+/* ============================== quiz ============================== */
+.quiz-shell{max-width:840px;margin-inline:auto}
+.q-block{animation:pageIn .35s var(--ease)}
+.q-label{font-size:.82rem;font-weight:800;color:var(--p-600);text-transform:uppercase;letter-spacing:.07em}
+.q-title{font-size:clamp(1.25rem,2.8vw,1.7rem);margin:.5rem 0 1.2rem}
+.q-options{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.opt{
+  display:flex;align-items:center;gap:.7rem;text-align:left;background:#fff;border:1.5px solid var(--line);
+  border-radius:var(--r-sm);padding:.85rem 1rem;cursor:pointer;font-weight:650;font-size:.94rem;
+  transition:transform .2s var(--ease),border-color .2s,background .2s,box-shadow .2s;font:inherit;
+}
+.opt:hover{transform:translateY(-3px);border-color:var(--p-400);box-shadow:var(--shadow-sm)}
+.opt .tick{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line-strong);display:grid;place-items:center;font-size:.8rem;color:#fff;flex:none;transition:.2s}
+.opt.sel{border-color:var(--p-500);background:var(--p-50);box-shadow:0 12px 26px -18px rgba(93,60,214,.9)}
+.opt.sel .tick{background:var(--p-600);border-color:var(--p-600)}
+.opt small{display:block;font-weight:600;color:var(--muted);font-size:.78rem}
+.quiz-nav{display:flex;align-items:center;gap:.7rem;margin-top:1.5rem;flex-wrap:wrap}
+.match-card{border-left:4px solid transparent;border-image:linear-gradient(180deg,#7c3aed,#3b82f6) 1}
+.match-bar{height:9px;border-radius:999px;background:#f1effb;overflow:hidden}
+.match-bar>span{display:block;height:100%;background:var(--grad)}
+
+/* ============================== stories ============================== */
+.avatar{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;font-size:1.5rem;background:var(--grad-soft);border:1px solid #ece8ff;flex:none}
+.story-grid{display:grid;gap:1.15rem;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.note-banner{
+  display:flex;gap:.75rem;align-items:flex-start;background:linear-gradient(135deg,#fff8e8,#fff3f8);
+  border:1px solid #ffe0ab;border-radius:var(--r);padding:1rem 1.1rem;font-size:.9rem;color:#7a4a13;
+}
+.note-banner b{color:#5f3708}
+
+/* ============================== modal ============================== */
+.modal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:1.1rem}
+.modal.open{display:flex}
+.modal-back{position:absolute;inset:0;background:rgba(22,14,54,.55);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-card{
+  position:relative;background:#fff;border-radius:var(--r-lg);width:100%;max-width:760px;max-height:88vh;overflow:auto;
+  box-shadow:var(--shadow-lg);animation:pop .3s var(--ease);border:1px solid rgba(255,255,255,.5);
+}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.975)}to{opacity:1;transform:none}}
+.modal-head{position:sticky;top:0;background:linear-gradient(135deg,#faf8ff,#f2f6ff);border-bottom:1px solid var(--line);padding:1.2rem 1.3rem;display:flex;gap:.9rem;align-items:flex-start;z-index:2}
+.modal-body{padding:1.3rem;display:grid;gap:1.05rem}
+.modal-close{margin-left:auto;width:38px;height:38px;border-radius:12px;border:1px solid var(--line-strong);background:#fff;cursor:pointer;display:grid;place-items:center;font-size:1.05rem;color:var(--ink-soft);flex:none;transition:.2s}
+.modal-close:hover{background:var(--rose-bg);color:var(--rose);border-color:var(--rose-line)}
+.subhead{font-size:.79rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--p-600)}
+.list-check{display:grid;gap:.5rem}
+.list-check li{display:flex;gap:.6rem;font-size:.9rem;color:var(--ink-soft);align-items:flex-start}
+.list-check li::before{content:"✔";color:var(--mint);font-weight:800;flex:none}
+.list-warn li::before{content:"!";color:var(--amber);background:var(--amber-bg);width:17px;height:17px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;margin-top:.22rem}
+
+/* ============================== toast ============================== */
+.toast-wrap{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);z-index:200;display:grid;gap:.5rem;justify-items:center;pointer-events:none;width:min(92vw,420px)}
+.toast{
+  background:#1c1546;color:#fff;border-radius:999px;padding:.7rem 1.15rem;font-size:.88rem;font-weight:650;
+  box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:.55rem;animation:toastIn .3s var(--ease);
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ============================== footer ============================== */
+.footer{background:#150f34;color:rgba(255,255,255,.72);margin-top:clamp(2.5rem,6vw,4.5rem);padding:clamp(2.4rem,5vw,3.4rem) 0 1.4rem}
+.footer h4{color:#fff;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.9rem}
+.footer-grid{display:grid;gap:2rem;grid-template-columns:1.5fr 1fr 1fr 1.1fr}
+.footer .brand{color:#fff}
+.footer p{font-size:.9rem;line-height:1.65}
+.footer a{font-size:.9rem;color:rgba(255,255,255,.72);transition:color .2s,transform .2s;display:inline-block}
+.footer a:hover{color:#fff;transform:translateX(3px)}
+.footer li+li{margin-top:.5rem}
+.socials{display:flex;gap:.55rem;margin-top:1rem}
+.social{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:grid;place-items:center;transition:.25s var(--ease)}
+.social:hover{background:var(--grad);border-color:transparent;transform:translateY(-3px)}
+.social svg{width:18px;height:18px;fill:rgba(255,255,255,.85)}
+.social:hover svg{fill:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:2.2rem;padding-top:1.2rem;display:flex;flex-wrap:wrap;gap:.8rem;justify-content:space-between;align-items:center;font-size:.83rem}
+.dot-sep{opacity:.4;margin:0 .4rem}
+.badge-soft-note{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:.3rem .8rem;font-size:.78rem}
+
+/* ============================== reveal / utils ============================== */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.stack{display:grid;gap:1rem}
+.stack-sm{display:grid;gap:.6rem}
+.row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.empty{text-align:center;padding:3rem 1.5rem;border:1px dashed var(--line-strong);border-radius:var(--r);background:#fff}
+.empty .icon-tile{margin:0 auto 1rem}
+.count-pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:.4rem .9rem;font-size:.84rem;font-weight:750;color:var(--ink-soft)}
+.two-col{display:grid;grid-template-columns:1.05fr .95fr;gap:1.3rem;align-items:start}
+.crumbs{display:flex;gap:.45rem;align-items:center;font-size:.85rem;color:var(--muted);font-weight:650;margin-bottom:1rem}
+.crumbs a:hover{color:var(--p-700)}
+.crumbs span{opacity:.5}
+.mt-1{margin-top:.6rem}.mt-2{margin-top:1.1rem}.mt-3{margin-top:1.7rem}
+.txt-c{text-align:center}
+
+@media (max-width:960px){
+  .planner-grid,.two-col{grid-template-columns:1fr}
+  .result-card{position:static}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:600px){
+  :root{--nav-h:66px}
+  .wrap{width:min(1180px,100% - 1.7rem)}
+  .footer-grid{grid-template-columns:1fr}
+  .hero-trust{gap:1.2rem}
+  .trust b{font-size:1.12rem}
+  .card{padding:1.1rem}
+  .float-chip.c2{left:0}
+  .float-chip.c1{left:0}
+  .float-chip.c3{right:-6px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+@media print{.nav,.footer,.toast-wrap{display:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ============================ NAVBAR ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#/home" aria-label="LocalLaunch home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2c3.1 0 5.5 2.4 5.5 5.5 0 4-5.5 9.5-5.5 9.5S6.5 11.5 6.5 7.5C6.5 4.4 8.9 2 12 2Z"/>
+          <circle cx="12" cy="7.4" r="1.9"/>
+          <path d="M8 20.5c1.2-1 2.5-1.5 4-1.5s2.8.5 4 1.5"/>
+        </svg>
+      </span>
+      <span>LocalLaunch<small>Start small, start now</small></span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+      <a class="nav-link" href="#/home" data-route="home">Home</a>
+      <a class="nav-link" href="#/ideas" data-route="ideas">Startup Ideas</a>
+      <a class="nav-link" href="#/planner" data-route="planner">Budget Planner</a>
+      <a class="nav-link" href="#/guide" data-route="guide">Business Guide</a>
+      <a class="nav-link" href="#/stories" data-route="stories">Success Stories</a>
+      <a class="nav-link" href="#/about" data-route="about">About</a>
+      <a class="btn btn-primary nav-mobile-cta" href="#/quiz">🎯 Find My Business Idea</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn-primary nav-cta" href="#/quiz">🎯 Find My Idea</a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================ HOME ============================ -->
+<section class="page" id="page-home" data-page="home">
+
+  <div class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    </div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">💡 For students &amp; first-time founders</span>
+        <h1>Turn Your Small Idea Into a <span class="grad-text">Business.</span></h1>
+        <p class="hero-sub">Discover affordable startup ideas, plan your budget, and take your first step toward entrepreneurship — no MBA, no big investment, no experience needed.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="#/ideas">🚀 Explore Startup Ideas</a>
+          <a class="btn btn-ghost btn-lg" href="#/quiz">🎯 Find My Business Idea</a>
+        </div>
+        <div class="hero-trust">
+          <div class="trust"><b>10+</b><span>curated beginner ideas</span></div>
+          <div class="trust"><b>₹0</b><span>lowest starting budget</span></div>
+          <div class="trust"><b>9</b><span>step launch guide</span></div>
+          <div class="trust"><b>100%</b><span>free &amp; beginner friendly</span></div>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="float-chip c1">💰 Budget: ₹5,000</div>
+        <div class="float-chip c2">🎓 Student-friendly</div>
+        <div class="float-chip c3">⏱️ 3 hrs / day</div>
+
+        <div class="snapshot">
+          <div class="snapshot-head">
+            <span class="icon-tile lg tile-emoji">🎁</span>
+            <div>
+              <strong style="display:block">Customized Gift Business</strong>
+              <span class="muted" style="font-size:.83rem">Creative &amp; Gifting · Hybrid</span>
+            </div>
+            <div class="ring" style="--v:92;margin-left:auto"><span>92%</span></div>
+          </div>
+          <div class="snap-row"><span>Starting budget</span><b>₹3,000 – ₹15,000</b></div>
+          <div class="snap-row"><span>Difficulty</span><b style="color:#0f9b6c">Beginner ✓</b></div>
+          <div class="snap-row"><span>Customers</span><b>Gifting &amp; occasions</b></div>
+          <div style="padding:.55rem .2rem .1rem">
+            <span class="muted" style="font-size:.8rem;font-weight:700">First 6 months — sample plan</span>
+            <div class="bars">
+              <i style="height:26%"></i><i style="height:38%"></i><i style="height:52%"></i>
+              <i style="height:64%"></i><i style="height:78%"></i><i style="height:90%"></i><i style="height:100%"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Explore by category</span>
+        <h2>Pick a lane that fits your life</h2>
+        <p>Every category opens the idea library with filters already applied — so you only see ideas that match your budget and skills.</p>
+      </div>
+      <div class="grid g-4" id="homeCategories"></div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">How LocalLaunch works</span>
+        <h2>From “someday” to “started” in three steps</h2>
+        <p>No jargon. No false promises. Just a simple path a beginner can actually follow.</p>
+      </div>
+      <div class="grid g-3" id="homeSteps"></div>
+    </div>
+  </section>
+
+  <!-- Featured ideas -->
+  <section class="section" style="background:linear-gradient(180deg,#fbfaff,#f6f4ff)">
+    <div class="wrap">
+      <div class="section-head row reveal">
+        <div style="max-width:38rem">
+          <span class="eyebrow">Featured ideas</span>
+          <h2>Popular low-budget starting points</h2>
+          <p>A small sample from the idea library. Open the full list to filter by budget, mode, skill level and category.</p>
+        </div>
+        <a class="btn btn-ghost" href="#/ideas">View all ideas →</a>
+      </div>
+      <div class="ideas-grid" id="featuredIdeas"></div>
+    </div>
+  </section>
+
+  <!-- Band -->
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="band reveal">
+        <div class="stat"><b data-count="10" data-suffix="+">0</b><span>Curated startup ideas</span></div>
+        <div class="stat"><b data-count="4" data-suffix="">0</b><span>Filters to narrow your match</span></div>
+        <div class="stat"><b data-count="9" data-suffix="">0</b><span>Steps in the launch guide</span></div>
+        <div class="stat"><b data-count="100" data-suffix="%">0</b><span>Free, sample-based planning</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stories teaser -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head row reveal">
+        <div style="max-width:38rem">
+          <span class="eyebrow">Illustrative stories</span>
+          <h2>See how a tiny start begins</h2>
+          <p>Example journeys written to show realistic early challenges — not claims about real businesses.</p>
+        </div>
+        <a class="btn btn-ghost" href="#/stories">All success stories →</a>
+      </div>
+      <div class="story-grid" id="homeStories"></div>
+    </div>
+  </section>
+
+  <!-- CTA band -->
+  <section class="section">
+    <div class="wrap">
+      <div class="card card-flat reveal" style="padding:clamp(1.6rem,4vw,2.8rem);background:linear-gradient(135deg,#f7f4ff,#eef5ff);border-color:#e0dbff;text-align:center;gap:1.1rem">
+        <h2 style="font-size:clamp(1.5rem,3.6vw,2.1rem)">Not sure which business suits you?</h2>
+        <p class="muted" style="max-width:44rem;margin-inline:auto">Answer five quick questions about your budget, skills, and free time. LocalLaunch suggests ideas with a match score and the reason behind each match.</p>
+        <div class="row" style="justify-content:center">
+          <a class="btn btn-primary btn-lg" href="#/quiz">🎯 Find My Business Idea</a>
+          <a class="btn btn-ghost btn-lg" href="#/planner">🧮 Open Budget Planner</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================ STARTUP IDEAS ============================ -->
+<section class="page" id="page-ideas" data-page="ideas" hidden>
+  <div class="wrap section">
+    <div class="crumbs"><a href="#/home">Home</a><span>/</span> Startup Ideas</div>
+    <div class="section-head row reveal">
+      <div style="max-width:42rem">
+        <span class="eyebrow">Idea library</span>
+        <h2>Startup ideas you can actually start</h2>
+        <p>Each idea card shows the starting budget, difficulty, target customers and required skills. Filter the list, then open <em>View Details</em> for the first-steps checklist.</p>
+      </div>
+      <span class="count-pill" id="ideaCount">—</span>
+    </div>
+
+    <div class="filter-bar reveal mt-2">
+      <div class="filters">
+        <div class="field">
+          <label for="fSearch">🔍 Search idea</label>
+          <input class="input" id="fSearch" type="search" placeholder="e.g. bakery, gifts, design" />
+        </div>
+        <div class="field">
+          <label for="fBudget">Budget</label>
+          <select class="select" id="fBudget">
+            <option value="any">Any budget</option>
+            <option value="low">Under ₹5,000</option>
+            <option value="mid">₹5,000 – ₹25,000</option>
+            <option value="high">Above ₹25,000</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fMode">Online / Offline</label>
+          <select class="select" id="fMode">
+            <option value="any">Any mode</option>
+            <option value="Online">Online only</option>
+            <option value="Offline">Offline only (local)</option>
+            <option value="Hybrid">Hybrid (both)</option>
+            <option value="web">Online + hybrid</option>
+            <option value="local">Offline + hybrid (works at home)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fLevel">Skill level</label>
+          <select class="select" id="fLevel">
+            <option value="any">Any level</option>
+            <option value="Beginner">Beginner friendly</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fCategory">Business category</label>
+          <select class="select" id="fCategory"><option value="any">All categories</option></select>
+        </div>
+        <div class="field">
+          <label for="fSort">Sort by</label>
+          <select class="select" id="fSort">
+            <option value="match">Recommended first</option>
+            <option value="low">Lowest budget first</option>
+            <option value="high">Highest budget first</option>
+            <option value="az">Name (A–Z)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mt-2" style="justify-content:space-between">
+        <div class="row" id="activeFilterChips"></div>
+        <button class="btn btn-soft btn-sm" id="clearFilters" type="button">✕ Clear all filters</button>
+      </div>
+    </div>
+
+    <div class="ideas-grid mt-3" id="ideasGrid"></div>
+    <div id="ideasEmpty" hidden></div>
+  </div>
+</section>
+
+<!-- ============================ BUDGET PLANNER ============================ -->
+<section class="page" id="page-planner" data-page="planner" hidden>
+  <div class="wrap section">
+    <div class="crumbs"><a href="#/home">Home</a><span>/</span> Budget Planner</div>
+    <div class="section-head reveal" style="max-width:46rem">
+      <span class="eyebrow">Budget planner</span>
+      <h2>Know your numbers before you spend</h2>
+      <p>Enter what you have and what you expect to spend. The planner estimates your startup cost, leftover money, how many months you can survive, and the monthly sales you need to break even.</p>
+    </div>
+
+    <div class="presets reveal mt-2" id="presets" aria-label="Quick example presets"></div>
+
+    <div class="planner-grid mt-3">
+      <div class="card reveal" style="gap:1.1rem">
+        <div class="row" style="justify-content:space-between">
+          <h3>1 · Enter your numbers</h3>
+          <span class="badge b-soft">Currency: ₹</span>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="pBudget">Available budget (money you can spend)</label>
+            <div class="input-wrap"><span class="rupee">₹</span><input class="input" id="pBudget" type="number" min="0" step="500" placeholder="5000" /></div>
+            <span class="hint">Savings you are comfortable using — never borrow more than you can repay.</span>
+          </div>
+          <div class="field">
+            <label for="pEquip">Equipment / tools cost (one-time)</label>
+            <div class="input-wrap"><span class="rupee">₹</span><input class="input" id="pEquip" type="number" min="0" step="500" placeholder="2000" /></div>
+            <span class="hint">Machine, tools, phone stand, mixer, camera, laptop accessories…</span>
+          </div>
+          <div class="field">
+            <label for="pMaterial">Materials / stock cost (one-time)</label>
+            <div class="input-wrap"><span class="rupee">₹</span><input class="input" id="pMaterial" type="number" min="0" step="500" placeholder="1500" /></div>
+            <span class="hint">Raw material, ingredients, first batch of inventory, packaging.</span>
+          </div>
+          <div class="field">
+            <label for="pMarketing">Marketing budget (one-time + monthly)</label>
+            <div class="input-wrap"><span class="rupee">₹</span><input class="input" id="pMarketing" type="number" min="0" step="500" placeholder="800" /></div>
+            <span class="hint">Flyers, samples, small social-media boosts, business cards.</span>
+          </div>
+          <div class="field">
+            <label for="pMonthly">Monthly running expenses</label>
+            <div class="input-wrap"><span class="rupee">₹</span><input class="input" id="pMonthly" type="number" min="0" step="500" placeholder="1200" /></div>
+            <span class="hint">Transport, internet, rent/web space, packaging, re-stocking, subscriptions.</span>
+          </div>
+          <div class="field">
+            <label for="pPrice">Average selling price per order (optional)</label>
+            <div class="input-wrap"><span class="rupee">₹</span><input class="input" id="pPrice" type="number" min="0" step="50" placeholder="350" /></div>
+            <span class="hint">Used to estimate how many orders per month you need.</span>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn btn-dark" id="copySummary" type="button">📋 Copy my plan summary</button>
+          <button class="btn btn-ghost" id="resetPlanner" type="button">↺ Reset</button>
+          <span class="hint">Nothing leaves your device — the calculator runs fully in the browser.</span>
+        </div>
+      </div>
+
+      <div class="card result-card reveal" style="gap:1rem">
+        <h3>2 · Your estimate</h3>
+        <div>
+          <span class="hint" style="font-weight:700">Estimated startup cost</span>
+          <div class="big-number grad-text" id="rStartup">₹0</div>
+          <p class="hint">Equipment + materials + marketing</p>
+        </div>
+        <div class="metric"><span>Remaining budget</span><b id="rRemaining">₹0</b></div>
+        <div class="metric"><span>Monthly running cost</span><b id="rMonthly">₹0</b></div>
+        <div class="metric"><span>Months you can cover</span><b id="rRunway">—</b></div>
+        <div class="metric"><span>Monthly sales needed to break even</span><b id="rBreakeven">₹0</b></div>
+        <div class="metric"><span>Orders per month needed</span><b id="rOrders">—</b></div>
+        <div>
+          <span class="hint" style="font-weight:700">Where your budget goes</span>
+          <div class="alloc-bar mt-1" id="rBar" aria-hidden="true"></div>
+          <div class="alloc-legend mt-1">
+            <span><i class="dot" style="background:#7c3aed"></i>Equipment</span>
+            <span><i class="dot" style="background:#3b82f6"></i>Materials</span>
+            <span><i class="dot" style="background:#f472b6"></i>Marketing</span>
+            <span><i class="dot" style="background:#cbd5e1"></i>Left over</span>
+          </div>
+        </div>
+        <div id="rStatus"></div>
+        <div>
+          <span class="hint" style="font-weight:700">What this means for you</span>
+          <div class="tips mt-1" id="rTips"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-banner mt-3 reveal">
+      <span style="font-size:1.2rem">💡</span>
+      <div><b>Remember:</b> these are estimates to help you think, not guarantees. Real costs vary by city, supplier and season. Add a 10–15% buffer for surprises like transport, wastage or damaged stock.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ BUSINESS GUIDE ============================ -->
+<section class="page" id="page-guide" data-page="guide" hidden>
+  <div class="wrap section">
+    <div class="crumbs"><a href="#/home">Home</a><span>/</span> Business Guide</div>
+    <div class="section-head row reveal">
+      <div style="max-width:42rem">
+        <span class="eyebrow">Business guide</span>
+        <h2>Nine steps from idea to launch</h2>
+        <p>Work through the steps in order. Tick each task as you finish it — your progress bar is saved in this browser session.</p>
+      </div>
+      <span class="count-pill" id="guideProgressText">0 of 36 tasks done</span>
+    </div>
+
+    <div class="card card-flat reveal" style="gap:.6rem">
+      <div class="row" style="justify-content:space-between">
+        <span class="flabel">Your launch progress</span>
+        <span class="badge b-soft" id="guidePercent">0%</span>
+      </div>
+      <div class="progress"><span id="guideBar"></span></div>
+      <span class="hint">Tip: finish step 1 to step 4 before you spend a single rupee.</span>
+    </div>
+
+    <div class="steps mt-3" id="guideSteps"></div>
+
+    <div class="card card-flat mt-3 reveal" style="background:linear-gradient(135deg,#f7f4ff,#eef5ff);border-color:#e0dbff">
+      <h3>Ready to put your numbers on paper?</h3>
+      <p class="muted">Turn the costs from step 4 into a real plan with the Budget Planner.</p>
+      <div class="row"><a class="btn btn-primary" href="#/planner">🧮 Open Budget Planner</a><a class="btn btn-ghost" href="#/ideas">💡 Browse ideas</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ QUIZ ============================ -->
+<section class="page" id="page-quiz" data-page="quiz" hidden>
+  <div class="wrap section">
+    <div class="crumbs"><a href="#/home">Home</a><span>/</span> Find My Business Idea</div>
+    <div class="section-head center reveal">
+      <span class="eyebrow">Idea matcher</span>
+      <h2>Five questions → your shortlist</h2>
+      <p>Answer honestly about your budget, skills and free time. We score every idea and explain exactly why it matched.</p>
+    </div>
+
+    <div class="quiz-shell" id="quizShell">
+      <div class="card reveal" style="gap:1.1rem">
+        <div class="row" style="justify-content:space-between">
+          <span class="flabel" id="quizStepLabel">Question 1 of 5</span>
+          <span class="badge b-soft" id="quizStepBadge">20% complete</span>
+        </div>
+        <div class="progress"><span id="quizBar" style="width:20%"></span></div>
+        <div id="quizBody"></div>
+        <div class="quiz-nav">
+          <button class="btn btn-ghost" id="quizBack" type="button">← Back</button>
+          <button class="btn btn-primary" id="quizNext" type="button">Next →</button>
+          <span class="hint push" id="quizHint">Select an option to continue</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizResults" hidden></div>
+  </div>
+</section>
+
+<!-- ============================ SUCCESS STORIES ============================ -->
+<section class="page" id="page-stories" data-page="stories" hidden>
+  <div class="wrap section">
+    <div class="crumbs"><a href="#/home">Home</a><span>/</span> Success Stories</div>
+    <div class="section-head reveal" style="max-width:46rem">
+      <span class="eyebrow">Success stories</span>
+      <h2>Six small beginnings, written to be useful</h2>
+      <p>Each story shows the idea, the first investment, the problems that showed up, and the lesson that came out of it. Open a card to read the full journey.</p>
+    </div>
+
+    <div class="note-banner reveal">
+      <span style="font-size:1.2rem">📝</span>
+      <div><b>Please note:</b> every person and business on this page is a <b>fictional example</b> created for learning and illustration. These are not real companies, and no earnings or results are being promised. Use them to understand the <em>pattern</em> of starting small, not as proof of income.</div>
+    </div>
+
+    <div class="story-grid mt-3" id="storiesGrid"></div>
+
+    <div class="card card-flat mt-3 reveal" style="background:linear-gradient(135deg,#f7f4ff,#eef5ff);border-color:#e0dbff">
+      <h3>What all six have in common</h3>
+      <ul class="list-check">
+        <li>They started with what they already owned instead of buying everything new.</li>
+        <li>They sold to people they could reach on foot or in a WhatsApp group before spending on ads.</li>
+        <li>They tested with a small batch and adjusted based on real feedback.</li>
+        <li>They priced so that material cost + their time was covered with a small margin left.</li>
+      </ul>
+      <div class="row"><a class="btn btn-primary" href="#/quiz">🎯 Find my idea</a><a class="btn btn-ghost" href="#/guide">📚 Read the 9-step guide</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ABOUT ============================ -->
+<section class="page" id="page-about" data-page="about" hidden>
+  <div class="wrap section">
+    <div class="crumbs"><a href="#/home">Home</a><span>/</span> About</div>
+    <div class="section-head reveal" style="max-width:48rem">
+      <span class="eyebrow">About LocalLaunch</span>
+      <h2>Built so the first step feels possible</h2>
+      <p>LocalLaunch is a free, beginner-friendly platform that helps students and aspiring entrepreneurs discover small business ideas that fit their real budget, skills, location and free time — then plan the numbers before spending money.</p>
+    </div>
+
+    <div class="grid g-3 mt-2">
+      <div class="card reveal"><span class="icon-tile tile-emoji">🎯</span><h3>Realistic over hyped</h3><p class="muted">We show starter budgets and honest difficulty levels. No “earn lakhs in a week” promises — just ideas that fit a tight budget.</p></div>
+      <div class="card reveal"><span class="icon-tile tile-emoji">🧮</span><h3>Numbers first</h3><p class="muted">Planning before spending is the habit that saves beginners. The planner shows startup cost, survival months and break-even sales.</p></div>
+      <div class="card reveal"><span class="icon-tile tile-emoji">🤝</span><h3>Built for local</h3><p class="muted">Many ideas start in your own neighbourhood — tuition classes, home food, plants, gift hampers — before they ever go online.</p></div>
+    </div>
+
+    <div class="two-col mt-3">
+      <div class="card reveal" style="gap:.9rem">
+        <h3>What you can do here</h3>
+        <ul class="list-check">
+          <li><b>Explore 10+ curated ideas</b> filtered by budget, online/offline mode, skill level and category.</li>
+          <li><b>Match yourself</b> to ideas with a five-question matcher and see the reason for each match.</li>
+          <li><b>Plan your budget</b> and understand leftover money, monthly runway and break-even orders.</li>
+          <li><b>Follow a 9-step guide</b> from choosing an idea to tracking revenue.</li>
+          <li><b>Learn from illustrative stories</b> that highlight realistic early challenges.</li>
+        </ul>
+      </div>
+      <div class="card reveal" style="gap:.9rem">
+        <h3>What we don’t do</h3>
+        <ul class="list-check list-warn">
+          <li>We don’t promise income, profit or “guaranteed” success.</li>
+          <li>We don’t give legal, tax or financial advice — check local rules and, when needed, talk to a professional.</li>
+          <li>We don’t collect your data: the matcher and calculator run entirely in your browser.</li>
+          <li>We don’t feature real businesses as testimonials. All stories are labelled fictional examples.</li>
+        </ul>
+        <span class="badge b-gold">📚 Learning project with sample data</span>
+      </div>
+    </div>
+
+    <div class="section-head row reveal mt-3">
+      <div style="max-width:40rem">
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions beginners ask</h2>
+      </div>
+    </div>
+    <div class="steps" id="faqSteps"></div>
+
+    <div class="card card-flat mt-3 reveal" style="background:linear-gradient(135deg,#f7f4ff,#eef5ff);border-color:#e0dbff">
+      <h3>Contact LocalLaunch</h3>
+      <p class="muted">Found a bug, or want an idea added to the library? This sample project uses a placeholder inbox.</p>
+      <div class="row">
+        <a class="btn btn-primary" href="mailto:hello@locallaunch.example">✉️ hello@locallaunch.example</a>
+        <a class="btn btn-ghost" href="#/quiz">🎯 Try the idea matcher</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="#/home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2c3.1 0 5.5 2.4 5.5 5.5 0 4-5.5 9.5-5.5 9.5S6.5 11.5 6.5 7.5C6.5 4.4 8.9 2 12 2Z"/>
+              <circle cx="12" cy="7.4" r="1.9"/><path d="M8 20.5c1.2-1 2.5-1.5 4-1.5s2.8.5 4 1.5"/>
+            </svg>
+          </span>
+          <span>LocalLaunch</span>
+        </a>
+        <p class="mt-2">LocalLaunch helps students and aspiring entrepreneurs discover affordable startup ideas, plan a realistic budget, and take the first step toward entrepreneurship — with practical, beginner-friendly guidance.</p>
+        <div class="socials">
+          <a class="social" href="#/about" aria-label="Instagram (sample link)" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.6.23 1 .5 1.4.94.44.44.71.84.94 1.4.17.4.36 1 .42 2.2.07 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 1.8-.42 2.2a3.9 3.9 0 0 1-.94 1.4c-.44.44-.84.71-1.4.94-.4.17-1 .36-2.2.42-1.3.07-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-1.8-.25-2.2-.42a3.9 3.9 0 0 1-1.4-.94 3.9 3.9 0 0 1-.94-1.4c-.17-.4-.36-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-1.8.42-2.2.23-.6.5-1 .94-1.4.44-.44.84-.71 1.4-.94.4-.17 1-.36 2.2-.42C8.4 2.2 8.8 2.2 12 2.2Zm0 3.05A6.75 6.75 0 1 0 18.75 12 6.76 6.76 0 0 0 12 5.25Zm0 11.13A4.38 4.38 0 1 1 16.38 12 4.39 4.39 0 0 1 12 16.38Zm6.99-11.4a1.58 1.58 0 1 1-1.58-1.58 1.58 1.58 0 0 1 1.58 1.58Z"/></svg></a>
+          <a class="social" href="#/about" aria-label="X / Twitter (sample link)" title="X / Twitter"><svg viewBox="0 0 24 24"><path d="M17.5 3h3.2l-7 8 7.3 10h-5.6l-4.4-6-5 6H3l7.3-8.6L3.3 3h5.7l4 5.5ZM16.3 19h1.7L7.6 4.9H5.8Z"/></svg></a>
+          <a class="social" href="#/about" aria-label="LinkedIn (sample link)" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4v11H3v-11Zm6.5 0h3.8v1.6h.06c.53-1 1.83-2 3.75-2 4 0 4.74 2.5 4.74 5.8v5.6h-4v-5c0-1.2 0-2.8-1.74-2.8-1.75 0-2 1.35-2 2.72v5.08h-4v-11Z"/></svg></a>
+          <a class="social" href="#/about" aria-label="YouTube (sample link)" title="YouTube"><svg viewBox="0 0 24 24"><path d="M21.6 7.2c-.24-1.2-.94-2.1-2.1-2.34C17.6 4.4 14.9 4.4 12 4.4s-5.6 0-7.5.46C3.34 5.1 2.64 6 2.4 7.2 2.16 8.4 2.1 10.1 2.1 12s.06 3.6.3 4.8c.24 1.2.94 2.1 2.1 2.34 1.9.46 4.6.46 7.5.46s5.6 0 7.5-.46c1.16-.24 1.86-1.14 2.1-2.34.24-1.2.3-2.9.3-4.8s-.06-3.6-.3-4.8ZM10 15.5v-7l6 3.5-6 3.5Z"/></svg></a>
+          <a class="social" href="#/about" aria-label="WhatsApp (sample link)" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2.5a9.4 9.4 0 0 0-8 14.3L2.6 21.5l4.9-1.3A9.4 9.4 0 1 0 12 2.5Zm0 1.9a7.5 7.5 0 0 1 0 15 7.4 7.4 0 0 1-3.8-1l-.4-.25-2.6.7.7-2.5-.26-.42A7.5 7.5 0 0 1 12 4.4Zm-2.3 3.4c-.2 0-.5.1-.7.35-.25.3-.9 1-.9 2.2 0 1.25.9 2.4 1.05 2.6.15.2 1.8 2.9 4.4 3.9 2.15.85 2.6.7 3.05.65.5-.05 1.6-.65 1.8-1.3.25-.6.25-1.15.2-1.25-.1-.15-.3-.2-.6-.35-.3-.15-1.6-.8-1.85-.9-.25-.1-.45-.15-.65.15-.2.3-.7.9-.85 1.1-.15.2-.3.2-.6.05-.3-.15-1.2-.45-2.3-1.4-.85-.75-1.4-1.65-1.55-1.95-.15-.3 0-.45.15-.6.1-.15.45-.5.6-.7.15-.2.2-.3.3-.5.1-.2.05-.4-.05-.55-.1-.15-.6-1.5-.85-2.05-.2-.45-.4-.4-.6-.4h-.55Z"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#/home">Home</a></li>
+          <li><a href="#/ideas">Startup Ideas</a></li>
+          <li><a href="#/planner">Budget Planner</a></li>
+          <li><a href="#/guide">Business Guide</a></li>
+          <li><a href="#/quiz">Find My Business Idea</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#/about">About LocalLaunch</a></li>
+          <li><a href="#/stories">Success Stories</a></li>
+          <li><a href="mailto:hello@locallaunch.example">Contact</a></li>
+          <li><a href="#/about">FAQ</a></li>
+          <li><a href="#/planner">Cost Calculator</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Legal &amp; contact</h4>
+        <ul>
+          <li><a href="#/home" data-modal="privacy">Privacy Policy</a></li>
+          <li><a href="#/home" data-modal="terms">Terms of Use</a></li>
+          <li><a href="#/home" data-modal="disclaimer">Content Disclaimer</a></li>
+          <li><a href="mailto:hello@locallaunch.example">hello@locallaunch.example</a></li>
+        </ul>
+        <div class="mt-2"><span class="badge-soft-note">🌱 Sample data for learning</span></div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> LocalLaunch. All rights reserved.<span class="dot-sep">•</span>Made for a college startup project demo.</span>
+      <span>Ideas, budgets and stories on this site are illustrative examples — not financial advice or income claims.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================ MODAL + TOAST ============================ -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-back" data-close></div>
+  <div class="modal-card" role="document">
+    <div class="modal-head">
+      <span class="icon-tile lg tile-emoji" id="modalIcon">💡</span>
+      <div>
+        <h3 id="modalTitle" style="font-size:1.2rem">Title</h3>
+        <div class="chips" id="modalBadges" style="margin-top:.35rem"></div>
+      </div>
+      <button class="modal-close" data-close aria-label="Close dialog">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   LocalLaunch — application script
+   Plain, dependency-free JavaScript. All data below is SAMPLE DATA
+   written for a student project.
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  var $  = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (m) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m];
+  }); };
+  var INR = function (n) {
+    n = Math.round(Number(n) || 0);
+    var s = String(Math.abs(n)), last3 = s.slice(-3), rest = s.slice(0, -3);
+    if (rest) { last3 = "," + last3; }
+    rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+    return (n < 0 ? "-₹" : "₹") + rest + last3;
+  };
+
+  /* ------------------------------------------------------------------
+     1. BUSINESS CATEGORIES
+     ------------------------------------------------------------------ */
+  var CATEGORIES = [
+    { id: "low",      icon: "💰", name: "Low-Budget Ideas",       blurb: "Start with what is already in your room. Most of these need under ₹5,000 to begin.",
+      filter: { budget: "low" } },
+    { id: "student",  icon: "🎓", name: "Student-Friendly",       blurb: "Flexible work you can run between classes, with almost no fixed cost and no office.",
+      filter: { level: "Beginner" } },
+    { id: "homebased",icon: "🏠", name: "Home-Based Businesses",  blurb: "Operate from your kitchen, balcony or bedroom — no shop rent, no commute.",
+      filter: { mode: "local" } },
+    { id: "online",   icon: "💻", name: "Online Businesses",      blurb: "Sell, teach or design over the internet. Your customers can be in any city.",
+      filter: { mode: "web" } }
+  ];
+
+  /* ------------------------------------------------------------------
+     2. STARTUP IDEAS (sample data)
+     ------------------------------------------------------------------ */
+  var IDEAS = [
+    {
+      id: "gifts", icon: "🎁", name: "Customized Gift Business",
+      category: "Creative & Gifting", level: "Beginner", mode: "Hybrid",
+      min: 3000, max: 15000, timeNeed: "moderate",
+      tagline: "Personalised hampers, photo frames and printed gifts for birthdays and weddings.",
+      desc: "You take orders for personalised gifts — photo frames, mugs, hampers, name boards — buy the base item from a local wholesale market or online, customise it, and hand it over on the occasion date. Low risk because you buy materials only after you receive an order.",
+      customers: "Students, families, offices and couples celebrating birthdays, weddings, anniversaries and festivals.",
+      skills: ["Basic craft or design sense", "Customer chat on WhatsApp/DM", "Tidy packing", "Time management for deadlines"],
+      skillIds: ["craft", "design", "sales"],
+      industries: ["creative", "gifting"],
+      tags: ["₹5k or less to start", "Work from home", "Order-based", "Festival season demand"],
+      firstWeek: [
+        "Pick 3 gift types only (example: photo frame, hamper, printed mug) so you buy less stock.",
+        "Find one local printer/wholesaler and get real price rates for 10 pieces.",
+        "Create 5 sample pieces and photograph them in daylight near a window.",
+        "Post your samples in 3 WhatsApp groups and take your first pre-order with 50% advance."
+      ],
+      moneyIn: ["Ask for 50% advance on every order to fund materials.", "Bundle a small add-on (card, ribbon) to raise the average order value."],
+      watchOut: ["Broken glass or damaged prints during delivery — pack with bubble wrap.", "Rush orders in festival weeks: keep a cut-off date for accepting orders."]
+    },
+    {
+      id: "snacks", icon: "🍪", name: "Homemade Snacks Business",
+      category: "Food & Beverage", level: "Beginner", mode: "Offline",
+      min: 2000, max: 12000, timeNeed: "moderate",
+      tagline: "Fresh, home-made snacks sold by the box or packet to neighbours, hostels and offices.",
+      desc: "You prepare a small range of snacks — murukku, mixture, cookies, podis, laddus — in your own kitchen and sell them in neat packets. Orders are usually weekly subscriptions or festival orders, so you cook only after you know demand.",
+      customers: "Neighbours, hostel students, working professionals, tea shops and festival buyers.",
+      skills: ["Confident cooking", "Hygienic packing", "Consistent taste", "Local selling"],
+      skillIds: ["cooking", "sales"],
+      industries: ["food", "home"],
+      tags: ["Kitchen-based", "Weekly orders", "Low equipment", "Repeat customers"],
+      firstWeek: [
+        "Choose 2 items you can cook perfectly every single time.",
+        "Get food-grade packets or boxes and small stickers with your name and phone number.",
+        "Cook one trial batch of 20 packets and price them so material + gas + your time is covered.",
+        "Collect orders in a WhatsApp group before cooking the next batch."
+      ],
+      moneyIn: ["Weekly snack subscriptions give predictable income.", "Charge extra for festival gift boxes."],
+      watchOut: ["Food licence and hygiene rules apply in most areas — check with your local municipal office before selling at scale.", "Never sell a batch you would not eat yourself; one bad review travels fast in a small area."]
+    },
+    {
+      id: "design", icon: "🎨", name: "Digital Design Services",
+      category: "Online Services", level: "Intermediate", mode: "Online",
+      min: 1000, max: 8000, timeNeed: "moderate",
+      tagline: "Posters, wedding invites, social-media creatives and packaging design for local businesses.",
+      desc: "Small shops, tuition centres, salons and event planners need simple, clean creatives but cannot afford a full-time designer. You deliver posters, invites, menus and product images on a per-project price, using free design tools and your own laptop or a phone app.",
+      customers: "Local shops, coaching centres, event planners, influencers and small online sellers.",
+      skills: ["Design sense and basic layout", "Using a design tool like Canva/Figma", "Client communication", "Meeting revisions without ego"],
+      skillIds: ["design", "tech", "writing"],
+      industries: ["creative", "digital"],
+      tags: ["Zero stock", "Laptop only", "Portfolio-driven", "Repeat clients"],
+      firstWeek: [
+        "Create 6 sample designs for imaginary local businesses — this becomes your portfolio.",
+        "Set three fixed packages (poster / invite / monthly social pack) with clear revision limits.",
+        "Message 30 small businesses in your area with one free sample for their shop.",
+        "Deliver the first paid project on time and ask for one testimonial screenshot."
+      ],
+      moneyIn: ["Monthly content packages create steady income.", "Charge a small rush fee for same-day delivery."],
+      watchOut: ["Unlimited revisions can eat your weekend — write the limit in your package.", "Always get 50% advance before you start a project."]
+    },
+    {
+      id: "smm", icon: "📱", name: "Social Media Management",
+      category: "Online Services", level: "Intermediate", mode: "Online",
+      min: 0, max: 5000, timeNeed: "full",
+      tagline: "Plan, write and schedule posts for local businesses that have no time for Instagram.",
+      desc: "You manage one or two accounts for small local businesses — writing captions, designing simple posts, replying to comments, and reporting monthly. The work is mostly your time, not money, so the starting cost is almost zero.",
+      customers: "Boutiques, cafés, gyms, salons, tuition centres and clinics in your city.",
+      skills: ["Writing simple captions", "Basic photo/video editing on phone", "Consistency and scheduling", "Replying politely to comments"],
+      skillIds: ["writing", "design", "tech", "sales"],
+      industries: ["digital", "retail"],
+      tags: ["No investment", "Monthly retainer", "Remote work", "Portfolio-driven"],
+      firstWeek: [
+        "Pick one niche you understand (food, fashion, fitness or education).",
+        "Grow one account of your own with 12 clean posts to prove you can do it.",
+        "Prepare a one-page plan: what you post, how often, what the client gets each month.",
+        "Offer a 2-week paid trial to one small shop instead of asking for a big contract."
+      ],
+      moneyIn: ["Charge a monthly retainer instead of per post.", "Add-on services: reels editing, ad management, review replies."],
+      watchOut: ["Clear access terms: never hold the client's account hostage if they leave.", "Do not use copied songs or images — use free-stock and platform audio."]
+    },
+    {
+      id: "jewellery", icon: "💍", name: "Handmade Jewellery",
+      category: "Creative & Gifting", level: "Beginner", mode: "Hybrid",
+      min: 1500, max: 10000, timeNeed: "moderate",
+      tagline: "Handmade earrings, bracelets and hair accessories sold online and at campus stalls.",
+      desc: "You buy beads, threads, resin or fabric at wholesale rates and hand-make jewellery in small batches. Sales happen through Instagram, college exhibitions and weekend stalls, so you can test which designs people actually buy before making more.",
+      customers: "College students, young professionals, festive shoppers and exhibition crowds.",
+      skills: ["Handwork patience", "Colour and design sense", "Phone photography", "Selling at stalls/online"],
+      skillIds: ["craft", "design"],
+      industries: ["fashion", "creative"],
+      tags: ["Small batches", "Exhibition sales", "Gift-worthy", "Instagram-friendly"],
+      firstWeek: [
+        "Buy a starter kit of 3 designs (not 20) from a wholesale beads shop.",
+        "Make 15 pieces and shoot them on a plain white sheet in daylight.",
+        "Price at (material cost × 2.5) as a beginner thumb rule — adjust with feedback.",
+        "Book a small table at a college fest or local exhibition to test demand."
+      ],
+      moneyIn: ["Gift sets and festive collections sell at a premium.", "Take custom-colour orders for weddings."],
+      watchOut: ["Low-cost metal fittings can tarnish — tell customers to keep pieces dry.", "Dead stock is the biggest leak: make few, see what sells, make again."]
+    },
+    {
+      id: "thrift", icon: "👕", name: "Thrift Clothing Store",
+      category: "Resale & Retail", level: "Intermediate", mode: "Hybrid",
+      min: 4000, max: 25000, timeNeed: "full",
+      tagline: "Curated second-hand clothing sold online and at weekend flea markets.",
+      desc: "You buy pre-loved clothes in bulk or consignment, sort and clean them, then sell individual good pieces at a fair margin. The business runs on your eye for quality and your ability to photograph items well.",
+      customers: "Students, budget fashion buyers, vintage lovers and eco-conscious shoppers.",
+      skills: ["Judging fabric quality", "Photographing clothes on a hanger", "Negotiating with suppliers", "Handling size/stain queries honestly"],
+      skillIds: ["sales", "design"],
+      industries: ["fashion", "retail"],
+      tags: ["Bulk sourcing", "Flea market stalls", "Instagram shop", "Sustainability angle"],
+      firstWeek: [
+        "Source one small bundle (20–30 pieces) from a local seller or donation drive.",
+        "Wash, iron and sort into 'sell now' and 'skip' piles — be strict.",
+        "Photograph each piece with its size, condition and price clearly labelled.",
+        "Sell 10 pieces first and note which categories sold fastest."
+      ],
+      moneyIn: ["Bundles lower your cost per piece.", "Offer a 'style box' of 3 pieces at a fixed price for faster turnover."],
+      watchOut: ["Buying too many stained or torn pieces kills your margin — inspect before paying.", "Describe flaws honestly in the photos to avoid returns."]
+    },
+    {
+      id: "tutor", icon: "📚", name: "Tutoring Service",
+      category: "Education", level: "Beginner", mode: "Hybrid",
+      min: 0, max: 3000, timeNeed: "moderate",
+      tagline: "Teach one or two subjects online or at home, with almost zero starting cost.",
+      desc: "You teach a subject you already know well — school maths, English, spoken skills, or software basics — in small batches of 3–8 students. Income starts in the first week because there is nothing to purchase except a whiteboard and maybe a data pack.",
+      customers: "School students, college juniors, parents in your neighbourhood and adult learners.",
+      skills: ["Deep subject knowledge", "Explaining simply", "Patience with slow learners", "Managing a timetable"],
+      skillIds: ["teaching", "writing", "sales"],
+      industries: ["education"],
+      tags: ["Zero investment", "Starts this week", "Home or online", "Repeat monthly"],
+      firstWeek: [
+        "Decide the exact class, board and subject you will teach.",
+        "Make a one-page plan: what is covered in 12 weeks, batch size, timing, monthly fee.",
+        "Tell 20 parents/students in your building or colony about one free demo class.",
+        "Run the demo, collect monthly fees in advance, and keep batches small."
+      ],
+      moneyIn: ["Monthly advance fees create stable income.", "Small batches (5 students) earn more per hour than one-to-one."],
+      watchOut: ["Do not over-promise marks; promise clarity and practice instead.", "Mixed-level batches slow everyone down — group students at a similar level."]
+    },
+    {
+      id: "pod", icon: "🖨️", name: "Print-on-Demand Store",
+      category: "Online Services", level: "Intermediate", mode: "Online",
+      min: 0, max: 6000, timeNeed: "moderate",
+      tagline: "Design t-shirts, hoodies and mugs that a print partner produces only after an order.",
+      desc: "You upload your own designs to a print-on-demand platform or partner printer. When a customer orders, the printer makes and ships the item and you keep the difference. There is no stock in your room and no shipping work, but margins are thinner and design quality decides everything.",
+      customers: "Online shoppers buying niche-interest merch, gifts and campus or club merchandise.",
+      skills: ["Digital design", "Understanding a niche audience", "Writing product titles and descriptions", "Basic maths on margins"],
+      skillIds: ["design", "tech", "writing"],
+      industries: ["digital", "fashion"],
+      tags: ["No inventory", "Sells 24×7", "Design-led", "Global reach"],
+      firstWeek: [
+        "Pick one niche you genuinely understand (a fandom, a profession, a city, a hobby).",
+        "Create 8 designs and check print quality on one sample product for yourself.",
+        "Write honest product titles, sizes and delivery timelines from your printer's data.",
+        "Set prices so that print cost + platform fee still leaves a margin."
+      ],
+      moneyIn: ["Sell in bundles (2-pack) to raise order value.", "Festival-themed drops sell in short bursts."],
+      watchOut: ["Never use film, brand or sports logos you do not have the right to use.", "Check the printer's real delivery time before you promise dates to customers."]
+    },
+    {
+      id: "bakery", icon: "🧁", name: "Home Bakery",
+      category: "Food & Beverage", level: "Intermediate", mode: "Offline",
+      min: 5000, max: 30000, timeNeed: "full",
+      tagline: "Cakes, brownies and cookies baked on order from your home kitchen.",
+      desc: "You bake celebration cakes and dessert boxes on a pre-order basis for birthdays, anniversaries and occasions. A mixer, oven and basic cake tins are the main cost, and orders are booked a few days in advance so you do not bake unsold stock.",
+      customers: "Families, offices, college events, and customers in your colony and nearby apartments.",
+      skills: ["Baking accuracy", "Decoration basics", "Time planning for delivery slots", "Food-safety hygiene"],
+      skillIds: ["cooking", "design"],
+      industries: ["food"],
+      tags: ["Pre-order only", "Weekend heavy", "Premium pricing", "Home kitchen"],
+      firstWeek: [
+        "Perfect 3 products: one cake flavour, brownies and a cookie box.",
+        "Cost every recipe once (butter, eggs, cream, fuel, box) and fix a minimum price.",
+        "Bake 2 sample boxes for neighbours in exchange for honest feedback and a photo.",
+        "Open bookings for the coming weekend with a clear cut-off time."
+      ],
+      moneyIn: ["Custom cake designs justify higher prices.", "Dessert hampers for festivals and offices."],
+      watchOut: ["Cream cakes in hot weather need proper cooling and quick delivery.", "Check your local food-safety rules before selling to the public."]
+    },
+    {
+      id: "plants", icon: "🪴", name: "Plant & Gardening Business",
+      category: "Creative & Gifting", level: "Beginner", mode: "Hybrid",
+      min: 1500, max: 12000, timeNeed: "moderate",
+      tagline: "Sell potted plants, cuttings and décor planters, plus simple balcony garden help.",
+      desc: "You grow or buy easy-care plants — money plants, succulents, herbs — pot them attractively, and sell to homes and offices. Extra income comes from potting services and maintenance visits for balconies that people cannot look after themselves.",
+      customers: "Apartment families, offices, cafés, gifting buyers and plant-lovers on social media.",
+      skills: ["Plant care knowledge", "Potting and presentation", "Photographing plants nicely", "Basic local delivery"],
+      skillIds: ["craft", "sales"],
+      industries: ["home", "creative"],
+      tags: ["Green business", "Repeat care visits", "Gifting angle", "Grows with time"],
+      firstWeek: [
+        "Start with 4 easy species that survive beginner care.",
+        "Source plants or cuttings locally and keep pretty pots ready.",
+        "Set a fixed price per pot plus a small delivery charge for nearby areas.",
+        "Offer one free repotting demo to a neighbour in exchange for photos and a review."
+      ],
+      moneyIn: ["Monthly maintenance visits give recurring income.", "Corporate gifting orders for festive seasons."],
+      watchOut: ["Plants die in transit if packed badly — deliver personally for large pots.", "Be honest about how much light and water each plant needs, or you will get complaints."]
+    }
+  ];
+
+  /* ------------------------------------------------------------------
+     3. BUSINESS GUIDE — 9 steps
+     ------------------------------------------------------------------ */
+  var GUIDE = [
+    { n: 1, icon: "💡", title: "Choose an idea", summary: "Match the idea to your budget, skills and free time — not to trends.",
+      tasks: ["Write down what you already own that could be used for the business.", "Shortlist 3 ideas you can start within your available budget.", "Check how many hours per week you can realistically give.", "Pick ONE idea and commit to testing it for 60 days."],
+      tools: ["Idea library", "Find My Business Idea matcher"],
+      detail: "A beginner's biggest mistake is choosing the most exciting idea instead of the most doable one. Start where your existing skill and existing money already meet." },
+    { n: 2, icon: "🎯", title: "Identify your customers", summary: "Get specific about who will actually pay you, and where they are.",
+      tasks: ["Describe your customer in one line (age, area, problem, budget).", "List 10 real people or shops you could approach this week.", "Ask 5 of them what they would pay for this.", "Note the exact words they use to describe the problem."],
+      tools: ["WhatsApp groups", "Local shops", "Instagram/Google searches"],
+      detail: "'Everyone' is not a customer. 'Working parents within 2 km who order evening snacks' is a customer you can actually reach without spending on ads." },
+    { n: 3, icon: "🔍", title: "Research competitors", summary: "Study who already sells this nearby and where you can be different.",
+      tasks: ["Find 3 competitors within 5 km or in your niche online.", "Write their price, quality, delivery time and packaging.", "Find one gap: speed, personalisation, price or service.", "Decide your one clear difference in a single sentence."],
+      tools: ["Google Maps", "Instagram search", "A notebook"],
+      detail: "Competitors prove there is demand. You do not need to be cheaper — being faster, friendlier or more specific is often enough." },
+    { n: 4, icon: "🧮", title: "Calculate startup costs", summary: "Add up one-time costs and monthly costs before spending anything.",
+      tasks: ["List equipment, materials, marketing and monthly running costs.", "Add a 10–15% buffer for transport and wastage.", "Work out the price that covers cost plus a small margin.", "Confirm the money is yours or repayable — never high-interest debt."],
+      tools: ["Budget Planner", "Supplier price list"],
+      detail: "If your startup cost is more than you can afford, the plan is wrong — not you. Shrink the first version of the business until it fits." },
+    { n: 5, icon: "📝", title: "Create a basic business plan", summary: "One page is enough: what you sell, to whom, at what price, and your goal.",
+      tasks: ["Write your offer, price range and target customer on one page.", "Set a 3-month goal in numbers (orders, revenue or customers).", "List what you will NOT do in the first 3 months.", "Share the plan with a mentor or senior for a reality check."],
+      tools: ["One-page plan template", "Notes app"],
+      detail: "A plan you can read in two minutes is a plan you will actually follow. Fancy documents do not sell a single product." },
+    { n: 6, icon: "✨", title: "Build your brand", summary: "A name, a simple look, a clear promise and a way to be contacted.",
+      tasks: ["Choose a simple name that is easy to spell and say out loud.", "Pick two colours and one font, then keep them consistent.", "Create a WhatsApp Business profile, Instagram page or visiting card.", "Write a two-line description of what you do and for whom."],
+      tools: ["Free design tools", "WhatsApp Business", "Visiting card printer"],
+      detail: "You are not building a logo for the world — you are building recognition in your neighbourhood. Consistency beats complexity." },
+    { n: 7, icon: "📣", title: "Start marketing", summary: "Go where your first 20 customers already are, and offer proof.",
+      tasks: ["Tell 50 people directly — family, neighbours, classmates, shopkeepers.", "Post 3 real samples with prices, not just a logo.", "Ask 5 happy customers for a review or photo.", "Try one paid promotion only after you have free sales."],
+      tools: ["WhatsApp status", "Instagram reels", "Local flyers", "Word of mouth"],
+      detail: "Marketing is not advertising. In the beginning it is simply making sure people know you exist and can see what you make." },
+    { n: 8, icon: "🚀", title: "Launch your business", summary: "Open for orders on a fixed date, even if everything is not perfect.",
+      tasks: ["Set a launch date and announce it publicly.", "Prepare one small offer to get the first orders moving.", "Set your working hours and reply time, and keep to them.", "Deliver the first 10 orders with extra care — they bring the rest."],
+      tools: ["Order book/notes", "Payment app or UPI", "Packaging supplies"],
+      detail: "A launch is just the day you start accepting money for the work. It is fine to say 'first batch limited to 20 orders'." },
+    { n: 9, icon: "📈", title: "Track revenue and expenses", summary: "Record every rupee in and out, weekly, so you know what is working.",
+      tasks: ["Maintain one simple record: date, item, amount in, amount out.", "Total your month: revenue, expenses and profit.", "Find your best-selling item and drop the weakest one.", "Keep aside a small share for re-investment and emergencies."],
+      tools: ["Spreadsheet or notebook", "UPI statement", "Monthly review day"],
+      detail: "Beginners usually know how much they sold and forget how much they spent. Profit is the number that lets the business continue." }
+  ];
+
+  /* ------------------------------------------------------------------
+     4. SUCCESS STORIES — fictional / illustrative examples
+     ------------------------------------------------------------------ */
+  var STORIES = [
+    { id: "s1", icon: "🎁", name: "Aarav M.", place: "Fictional example · Tier-2 city", idea: "Customised Gift Hampers",
+      started: "Final-year student with about ₹6,000 saved", investment: "Around ₹6,000 (materials + packing)",
+      duration: "Tested over 4 months",
+      story: "Aarav started during the festive season with one product: a photo-frame gift hamper. He took 50% advance on every order so the customer's money paid for materials. He sold mostly to families in his own apartment complex and to classmates, and kept a cut-off date so he never over-promised delivery during festival rush.",
+      challenges: ["Two hampers arrived with cracked frames because packing was rushed.", "His first price list ignored transport and packaging, so early orders earned almost nothing.", "A late-night rush week made him miss a delivery date for a wedding."],
+      lessons: ["Adding packaging and travel cost to the price is not optional.", "A cut-off date protects your reputation more than extra orders do.", "Samples with visible prices get far more answers than a plain 'DM for details' post."] },
+    { id: "s2", icon: "🎨", name: "Meera K.", place: "Fictional example · Metro city", idea: "Design Services for Local Shops",
+      started: "Design student with a second-hand laptop", investment: "About ₹1,000 (portfolio printing and domain-less online profile)",
+      duration: "Grew over 6 months",
+      story: "Meera created six free sample designs for imaginary cafés and salons. She walked into 30 small shops with a printed sheet of samples, offering one free poster. Three shops agreed to a paid monthly social-media design package, which gave her a predictable amount every month instead of one-off projects.",
+      challenges: ["One client asked for unlimited revisions and absorbed two weeks of her time.", "Her first proposal had no revision limit written down anywhere.", "She undercharged for wedding invite sets because she forgot design time."],
+      lessons: ["Write the number of revisions into the package itself.", "Monthly packages give stability that per-project work never does.", "A printed sample sheet in hand beats a link sent on chat."] },
+    { id: "s3", icon: "🍪", name: "Sana R.", place: "Fictional example · Small town", idea: "Homemade Snack Subscriptions",
+      started: "Home cook starting with ₹2,500", investment: "Around ₹2,500 (packaging + first batch of ingredients)",
+      duration: "Built over 8 months",
+      story: "Sana cooked only two items she could make perfectly — spicy mixture and sesame laddus. Instead of selling daily, she sold weekly subscriptions to 15 families. Cooking only against confirmed orders kept wastage near zero, and repeat customers made revenue fairly predictable by the third month.",
+      challenges: ["Her first batch used cheap packaging and the snacks turned soft within a week.", "Festival weeks created more orders than she could cook alone.", "She had to learn about local food-safety requirements before selling widely."],
+      lessons: ["Food-grade airtight packaging protects both the product and your reputation.", "A fixed weekly menu is easier to handle than a long price list.", "Check local food rules early — it is cheaper than stopping later." ] },
+    { id: "s4", icon: "📚", name: "Rohit S.", place: "Fictional example · College town", idea: "Small-Batch Maths Tutoring",
+      started: "Engineering student with no money to invest", investment: "₹0 upfront (borrowed whiteboard and a shared phone)",
+      duration: "Consistent for a full academic year",
+      story: "Rohit taught one subject — school maths — to batches of six students instead of one-to-one classes, which raised his earnings per hour. He ran a free demo class in his hostel common room, collected monthly fees in advance, and gave every student a printed 12-week plan so parents knew exactly what they were paying for.",
+      challenges: ["His first batch had three different grade levels and no one progressed well.", "Two students stopped attending without informing him, making planning harder.", "Balancing his own exams with evening batches was harder than expected."],
+      lessons: ["Group students at the same level or the batch breaks down.", "A visible 12-week plan is what convinces parents to pay in advance.", "Cap the number of batches so your own studies do not suffer."] },
+    { id: "s5", icon: "🪴", name: "Divya P.", place: "Fictional example · Coastal city", idea: "Plants, Pots and Balcony Care",
+      started: "Started with balcony cuttings and ₹4,000", investment: "Around ₹4,000 (pots, soil, labels)",
+      duration: "Grew slowly over 10 months",
+      story: "Divya began with four easy plants grown from cuttings in her own balcony. She sold potted plants with printed care cards, then added paid monthly balcony-care visits for customers who travelled often. The care visits slowly became more profitable than selling plants.",
+      challenges: ["The first delivery had three broken pots because they were stacked loosely.", "Customers over-watered plants and blamed the plant quality.", "Summer months dried out stock faster than she could sell it."],
+      lessons: ["Printed care cards reduce complaints dramatically.", "Recurring services earn more than one-time product sales.", "Do not over-stock slow-moving varieties just because they look pretty."] },
+    { id: "s6", icon: "👕", name: "Imran A.", place: "Fictional example · University area", idea: "Curated Thrift Clothing",
+      started: "Two students pooling ₹12,000", investment: "About ₹12,000 for the first bundled stock",
+      duration: "Seasonal, tested over 5 months",
+      story: "Imran and his partner bought their first bundle of pre-loved clothes, washed and sorted everything strictly, and sold individual pieces online and at a campus flea stall. Clear photos with size, condition and price labels meant very few arguments with buyers, and festival stalls turned out to be their best sales days.",
+      challenges: ["Nearly a third of the first bundle was unsellable and had to be written off.", "Two buyers returned items because a stain was not photographed.", "Storing stock took over their hostel room."],
+      lessons: ["Inspect bundles before paying, or you pay for someone else's waste.", "Photograph flaws honestly — returns cost more than a lower price.", "Stall selling moves dead stock faster than online listings."] }
+  ];
+
+  /* ------------------------------------------------------------------
+     5. FAQ
+     ------------------------------------------------------------------ */
+  var FAQS = [
+    { q: "Is LocalLaunch free to use?", a: "Yes. Everything on this site — the idea library, the matcher, the budget planner and the guide — is free and runs inside your browser. It is a learning project built with sample data." },
+    { q: "Do I need money to start?", a: "You need some money, but far less than most people assume. Several ideas in the library can genuinely begin with under ₹2,000, and a few (tutoring, social media management) need almost nothing except your time and skill." },
+    { q: "Is the budget planner giving me financial advice?", a: "No. It is a simple estimating tool. It helps you see your startup cost, leftover money and break-even point so you can ask better questions. Always verify real prices with actual suppliers." },
+    { q: "Are the success stories real businesses?", a: "No. Every story is a clearly labelled fictional example written for teaching. They show typical patterns and challenges — not proof of anyone's income or results." },
+    { q: "What if I have no skills yet?", a: "Most beginner ideas need skills you can learn in days: basic packing, simple captions, a design tool, or cooking two items well. Start with the idea that matches a skill you already have, and learn one new skill at a time." },
+    { q: "Do I need to register a business before selling?", a: "Rules differ by country, state and business type. Many small local sales have simple requirements, and food businesses usually need licences. Check with your local municipal or tax authority — LocalLaunch does not give legal advice." }
+  ];
+
+  /* Legal modals (short, honest, sample content) */
+  var LEGAL = {
+    privacy: { icon: "🔒", title: "Privacy Policy (sample)", body: [
+      { h: "What we collect", p: "Nothing. This demo has no server, no accounts and no analytics. Your quiz answers, planner numbers and guide checklist are stored only in your own browser's local storage and never uploaded anywhere." },
+      { h: "Your control", p: "Clearing your browser data removes everything LocalLaunch saved. Nothing leaves your device." },
+      { h: "Contact", p: "For questions about this sample policy, write to hello@locallaunch.example." } ] },
+    terms: { icon: "📄", title: "Terms of Use (sample)", body: [
+      { h: "Educational use", p: "LocalLaunch is provided as an educational, illustrative tool for learning about small business basics. Content is sample data created for a student project." },
+      { h: "No guarantees", p: "Ideas, cost ranges, timelines and stories are illustrative. We do not guarantee income, profit, customers or success of any kind." },
+      { h: "Your responsibility", p: "Verify local rules, licences, taxes and supplier prices yourself before starting a business, and seek professional advice where needed." } ] },
+    disclaimer: { icon: "ℹ️", title: "Content Disclaimer", body: [
+      { h: "Sample data", p: "All business ideas, budgets, difficulty ratings and stories on this site are illustrative examples written for a college project. They are not claims about real businesses or real earnings." },
+      { h: "Not advice", p: "Nothing here is financial, legal, tax or investment advice. Cost figures will differ in your city and market." },
+      { h: "Fictional businesses", p: "The entrepreneurs named in Success Stories are fictional characters. Similarities to any real person or brand are coincidental." } ] }
+  };
+
+  /* ==================================================================
+     HELPERS & COMPONENTS
+     ================================================================== */
+  var LEVEL_CLASS = { Beginner: "b-beginner", Intermediate: "b-intermediate", Advanced: "b-advanced" };
+  var MODE_CLASS  = { Online: "b-online", Offline: "b-offline", Hybrid: "b-hybrid" };
+  var TIME_LABEL  = { few: "Under 1 hr/day", moderate: "1–3 hrs/day", full: "3+ hrs/day" };
+  var TIME_ORDER  = { few: 0, moderate: 1, full: 2 };
+  var TIME_TEXT   = ["Less than 1 hour a day", "1–3 hours a day", "More than 3 hours a day"];
+
+  var SKILLS = [
+    { id: "craft",    label: "Craft / handmade work", icon: "✂️" },
+    { id: "cooking",  label: "Cooking & baking",      icon: "🍳" },
+    { id: "design",   label: "Design & creativity",   icon: "🎨" },
+    { id: "teaching", label: "Teaching & explaining", icon: "📖" },
+    { id: "writing",  label: "Writing & social media",icon: "✍️" },
+    { id: "tech",     label: "Computers & tech",      icon: "💻" },
+    { id: "sales",    label: "Talking to customers",  icon: "🤝" }
+  ];
+  var INDUSTRIES = [
+    { id: "digital",   label: "Digital & tech",       icon: "💻" },
+    { id: "food",      label: "Food & beverages",     icon: "🍽️" },
+    { id: "creative",  label: "Art, craft & design",  icon: "🎨" },
+    { id: "education", label: "Education & tutoring", icon: "📚" },
+    { id: "fashion",   label: "Fashion & lifestyle",  icon: "👗" },
+    { id: "gifting",   label: "Gifting & events",     icon: "🎉" },
+    { id: "home",      label: "Home & gardening",     icon: "🏡" },
+    { id: "retail",    label: "Reselling & retail",   icon: "🛍️" }
+  ];
+  var BUDGET_STEPS = [
+    { value: 5000,   label: "Under ₹5,000",    sub: "Start with what I have in my pocket" },
+    { value: 15000,  label: "₹5,000 – ₹15,000",sub: "Some savings I can use" },
+    { value: 50000,  label: "₹15,000 – ₹50,000", sub: "Serious savings or family support" },
+    { value: 200000, label: "Above ₹50,000",   sub: "Ready for a bigger setup" }
+  ];
+
+  var ideaById = {};
+  IDEAS.forEach(function (i) { ideaById[i.id] = i; });
+  var categoryNames = IDEAS.map(function (i) { return i.category; })
+    .filter(function (v, i, a) { return a.indexOf(v) === i; }).sort();
+
+  function levelBadge(l) { return '<span class="badge ' + LEVEL_CLASS[l] + '">' + (l === "Beginner" ? "✓ " : "") + esc(l) + "</span>"; }
+  function modeBadge(m) {
+    var ic = m === "Online" ? "🌐" : m === "Offline" ? "🏠" : "🔀";
+    return '<span class="badge ' + MODE_CLASS[m] + '">' + ic + " " + esc(m) + "</span>";
+  }
+  function budgetLabel(i) { return INR(i.min) + " – " + INR(i.max); }
+
+  /* ---- reusable idea card component ---- */
+  function ideaCard(idea, opts) {
+    opts = opts || {};
+    var skills = idea.skills.slice(0, 2).join(", ") + (idea.skills.length > 2 ? " +" + (idea.skills.length - 2) + " more" : "");
+    var match = "";
+    if (typeof opts.score === "number") {
+      match = '<div class="mt-1"><div class="match-bar"><span style="width:' + opts.score + '%"></span></div>' +
+        '<span class="hint" style="font-weight:700">' + opts.score + '% match with your answers</span></div>';
+    } else {
+      match = '<div class="chips">' + idea.tags.slice(0, 2).map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") + "</div>";
+    }
+    return '' +
+    '<article class="card reveal ' + (opts.extraClass || "") + '" data-idea="' + idea.id + '">' +
+      '<div class="card-top">' +
+        '<span class="icon-tile lg tile-emoji" aria-hidden="true">' + idea.icon + "</span>" +
+        "<div>" +
+          "<h3>" + esc(idea.name) + "</h3>" +
+          '<p class="muted" style="font-size:.84rem;font-weight:650">' + esc(idea.category) + "</p>" +
+        "</div>" +
+      "</div>" +
+      '<div class="chips">' + levelBadge(idea.level) + modeBadge(idea.mode) + "</div>" +
+      '<p style="font-size:.92rem;color:var(--ink-soft)">' + esc(idea.tagline) + "</p>" +
+      '<div class="card-meta">' +
+        '<div class="meta-row"><span class="meta-ic" aria-hidden="true">💰</span><span><b>Starting budget:</b> ' + budgetLabel(idea) + "</span></div>" +
+        '<div class="meta-row"><span class="meta-ic" aria-hidden="true">⏱️</span><span><b>Time needed:</b> ' + TIME_LABEL[idea.timeNeed] + "</span></div>" +
+        '<div class="meta-row"><span class="meta-ic" aria-hidden="true">🎯</span><span><b>Customers:</b> ' + esc(idea.customers) + "</span></div>" +
+        '<div class="meta-row"><span class="meta-ic" aria-hidden="true">🛠️</span><span><b>Required skills:</b> ' + esc(skills) + "</span></div>" +
+      "</div>" +
+      match +
+      '<div class="card-foot">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-detail="' + idea.id + '">View Details</button>' +
+        '<button class="btn btn-ghost btn-sm" type="button" data-cat="' + esc(idea.category) + '">Similar →</button>' +
+      "</div>" +
+    "</article>";
+  }
+
+  /* ---- reusable story card component ---- */
+  function storyCard(s, compact) {
+    var inner =
+      '<div class="card-top">' +
+        '<span class="avatar" aria-hidden="true">' + s.icon + "</span>" +
+        "<div>" +
+          "<h3>" + esc(s.name) + "</h3>" +
+          '<p class="muted" style="font-size:.82rem;font-weight:650">' + esc(s.place) + "</p>" +
+        "</div>" +
+        '<span class="badge b-gold push">✎ Fictional</span>' +
+      "</div>" +
+      '<p style="font-weight:700;color:var(--ink-soft)">Idea: ' + esc(s.idea) + "</p>" +
+      (compact
+        ? '<p class="muted" style="font-size:.9rem">' + esc(s.story.slice(0, 150)) + "…</p>"
+        : '<p class="quote" style="font-size:.9rem">' + esc(s.story.slice(0, 230)) + "…</p>") +
+      '<div class="card-meta">' +
+        '<div class="meta-row"><span class="meta-ic" aria-hidden="true">💵</span><span><b>Initial investment:</b> ' + esc(s.investment) + "</span></div>" +
+        '<div class="meta-row"><span class="meta-ic" aria-hidden="true">🎬</span><span><b>Started as:</b> ' + esc(s.started) + "</span></div>" +
+        '<div class="meta-row"><span class="meta-ic" aria-hidden="true">📅</span><span><b>Timeframe:</b> ' + esc(s.duration) + "</span></div>" +
+      "</div>";
+    if (compact) {
+      inner += '<div class="card-foot"><button class="btn btn-soft btn-sm" type="button" data-story="' + s.id + '">Read the story →</button></div>';
+    } else {
+      inner += '<div class="card-foot"><button class="btn btn-primary btn-sm" type="button" data-story="' + s.id + '">Read full journey →</button>' +
+               '<span class="badge b-gold push">✎ Example</span></div>';
+      inner +=
+        '<hr class="hr" />' +
+        '<div><span class="subhead">⚠️ Challenges faced</span><ul class="list-check list-warn mt-1">' +
+          s.challenges.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul></div>" +
+        '<div><span class="subhead">✅ Lessons learned</span><ul class="list-check mt-1">' +
+          s.lessons.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul></div>";
+    }
+    return '<article class="card reveal" data-story-card="' + s.id + '">' + inner + "</article>";
+  }
+
+  /* ==================================================================
+     TOASTS
+     ================================================================== */
+  function toast(msg, icon) {
+    var wrap = $("#toastWrap");
+    var el = document.createElement("div");
+    el.className = "toast";
+    el.innerHTML = "<span>" + (icon || "✅") + "</span><span>" + esc(msg) + "</span>";
+    wrap.appendChild(el);
+    setTimeout(function () {
+      el.style.transition = "opacity .35s, transform .35s";
+      el.style.opacity = "0";
+      el.style.transform = "translateY(10px)";
+      setTimeout(function () { el.remove(); }, 380);
+    }, 2600);
+  }
+
+  /* ==================================================================
+     MODAL
+     ================================================================== */
+  var lastFocus = null;
+  function openModal(title, icon, badgesHTML, bodyHTML) {
+    lastFocus = document.activeElement;
+    $("#modalTitle").innerHTML = title;
+    $("#modalIcon").innerHTML = icon || "💡";
+    $("#modalBadges").innerHTML = badgesHTML || "";
+    $("#modalBody").innerHTML = bodyHTML || "";
+    $("#modal").classList.add("open");
+    document.body.style.overflow = "hidden";
+    var c = $(".modal-close"); if (c) c.focus();
+  }
+  function closeModal() {
+    $("#modal").classList.remove("open");
+    document.body.style.overflow = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.addEventListener("click", function (e) {
+    if (e.target.closest("[data-close]")) closeModal();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && $("#modal").classList.contains("open")) closeModal();
+  });
+
+  function showIdeaModal(id) {
+    var i = ideaById[id]; if (!i) return;
+    var body =
+      '<p style="color:var(--ink-soft)">' + esc(i.desc) + "</p>" +
+      '<div class="grid g-2" style="gap:.7rem">' +
+        '<div class="tip"><span>💰</span><span><b>Starting budget</b><br />' + budgetLabel(i) + "</span></div>" +
+        '<div class="tip"><span>⏱️</span><span><b>Time required</b><br />' + TIME_LABEL[i.timeNeed] + "</span></div>" +
+        '<div class="tip"><span>🏷️</span><span><b>Category</b><br />' + esc(i.category) + "</span></div>" +
+        '<div class="tip"><span>🎯</span><span><b>Best for</b><br />' + esc(i.customers) + "</span></div>" +
+      "</div>" +
+      '<div><span class="subhead">🛠️ Skills you need (or can learn in weeks)</span><div class="chips mt-1">' +
+        i.skills.map(function (s) { return '<span class="chip accent">' + esc(s) + "</span>"; }).join("") + "</div></div>" +
+      '<div><span class="subhead">🚀 Your first week, step by step</span><ul class="list-check mt-1">' +
+        i.firstWeek.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ul></div>" +
+      '<div class="grid g-2" style="gap:.7rem">' +
+        '<div class="card card-flat" style="gap:.5rem"><span class="subhead" style="color:var(--mint)">💚 How money comes in</span><ul class="list-check">' +
+          i.moneyIn.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ul></div>" +
+        '<div class="card card-flat" style="gap:.5rem"><span class="subhead" style="color:var(--amber)">⚠️ Watch out for</span><ul class="list-check list-warn">' +
+          i.watchOut.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ul></div>" +
+      "</div>" +
+      '<div class="chips">' + i.tags.map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") + "</div>" +
+      '<div class="note-banner"><span>📌</span><div>Cost ranges are illustrative estimates for a project demo. Always confirm real prices with your own local suppliers before spending.</div></div>' +
+      '<div class="row">' +
+        '<button class="btn btn-primary" type="button" data-plan-idea="' + i.id + '">🧮 Plan this budget</button>' +
+        '<button class="btn btn-ghost" type="button" data-cat="' + esc(i.category) + '">🔍 See similar ideas</button>' +
+      "</div>";
+    openModal(esc(i.name), i.icon,
+      levelBadge(i.level) + modeBadge(i.mode) + '<span class="badge b-soft">' + esc(i.category) + "</span>", body);
+  }
+
+  function showStoryModal(id) {
+    var s = STORIES.filter(function (x) { return x.id === id; })[0]; if (!s) return;
+    var body =
+      '<div class="note-banner"><span>✎</span><div><b>Fictional example.</b> This person and business are invented for illustration. No earnings, results or business outcomes are being promised.</div></div>' +
+      '<p style="color:var(--ink-soft)">' + esc(s.story) + "</p>" +
+      '<div class="tip"><span>💵</span><span><b>Approximate initial investment:</b> ' + esc(s.investment) + "</span></div>" +
+      '<div><span class="subhead">⚠️ Challenges faced</span><ul class="list-check list-warn mt-1">' +
+        s.challenges.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul></div>" +
+      '<div><span class="subhead">✅ Lessons learned</span><ul class="list-check mt-1">' +
+        s.lessons.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul></div>" +
+      '<div class="row"><button class="btn btn-primary" type="button" data-quiz="1">🎯 Find my own idea</button>' +
+      '<button class="btn btn-ghost" type="button" data-close="1">Close</button></div>';
+    openModal(esc(s.name) + " — " + esc(s.idea), s.icon, '<span class="badge b-gold">✎ Illustrative story</span>', body);
+  }
+
+  function showLegal(key) {
+    var l = LEGAL[key]; if (!l) return;
+    var body = l.body.map(function (b) {
+      return '<div><span class="subhead">' + esc(b.h) + '</span><p class="mt-1" style="color:var(--ink-soft)">' + esc(b.p) + "</p></div>";
+    }).join("");
+    body += '<div class="row"><button class="btn btn-primary" type="button" data-close="1">Got it</button>' +
+            '<a class="btn btn-ghost" href="mailto:hello@locallaunch.example">✉️ Contact us</a></div>';
+    openModal(esc(l.title), l.icon, '<span class="badge b-soft">Sample content</span>', body);
+  }
+
+  /* ==================================================================
+     ROUTER (hash based)
+     ================================================================== */
+  var ROUTES = ["home", "ideas", "planner", "guide", "stories", "about", "quiz"];
+  function go(route, opts) {
+    opts = opts || {};
+    if (ROUTES.indexOf(route) < 0) route = "home";
+    closeModal();
+    $$(".page").forEach(function (p) { p.hidden = p.getAttribute("data-page") !== route; });
+    $$(".nav-link").forEach(function (a) { a.classList.toggle("active", a.getAttribute("data-route") === route); });
+    $("#nav").classList.remove("menu-open");
+    $("#burger").setAttribute("aria-expanded", "false");
+    if (route === "quiz" && opts.fresh) resetQuiz();
+    var target = opts.hash ? document.getElementById(opts.hash) : null;
+    if (target && target.scrollIntoView) { setTimeout(function () { target.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60); }
+    else if (window.scrollTo) window.scrollTo({ top: 0, behavior: opts.noScroll ? "auto" : "smooth" });
+    observeReveals();
+    if (route === "planner") { renderPlanner(); }
+  }
+  function currentRoute() {
+    var h = (location.hash || "#/home").replace(/^#\/?/, "").split("?")[0];
+    return ROUTES.indexOf(h) >= 0 ? h : "home";
+  }
+  window.addEventListener("hashchange", function () { go(currentRoute()); });
+
+  /* ==================================================================
+     REVEAL ON SCROLL + COUNTERS
+     ================================================================== */
+  var revealObserver = null;
+  function observeReveals() {
+    if (!("IntersectionObserver" in window)) {
+      $$(".reveal").forEach(function (el) { el.classList.add("in"); });
+      return;
+    }
+    if (!revealObserver) {
+      revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add("in"); revealObserver.unobserve(en.target); }
+        });
+      }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    }
+    $$(".page:not([hidden]) .reveal:not(.in)").forEach(function (el, idx) {
+      if (!el.style.transitionDelay) el.style.transitionDelay = Math.min(idx % 8, 7) * 45 + "ms";
+      revealObserver.observe(el);
+    });
+  }
+  function initCounters() {
+    var bands = $$("[data-count]");
+    if (!bands.length) return;
+    if (!("IntersectionObserver" in window)) {
+      bands.forEach(function (b) { b.textContent = b.getAttribute("data-count") + b.getAttribute("data-suffix"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target, target = Number(el.getAttribute("data-count")), suffix = el.getAttribute("data-suffix") || "";
+        var start = performance.now(), dur = 1100;
+        (function tick(now) {
+          var p = Math.min((now - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        })(start);
+        io.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+    bands.forEach(function (b) { io.observe(b); });
+  }
+
+  /* ==================================================================
+     HOME PAGE RENDERING
+     ================================================================== */
+  var HOW_IT_WORKS = [
+    { icon: "💡", title: "1 · Tell us about yourself", text: "Answer five simple questions on budget, skills, working style and interests. It takes under a minute — no sign-up needed." },
+    { icon: "🎯", title: "2 · Get matched ideas", text: "See ideas scored against your answers, with the reason for every match and an honest difficulty level for each one." },
+    { icon: "🧮", title: "3 · Plan, then start", text: "Use the budget planner to check your startup cost, leftover money and break-even point. Then follow the 9-step guide to launch." }
+  ];
+
+  function renderHome() {
+    $("#homeCategories").innerHTML = CATEGORIES.map(function (c) {
+      var count = IDEAS.filter(function (i) { return matchesCategoryCard(i, c); }).length;
+      return '<button class="cat-card reveal" type="button" data-homecat="' + c.id + '">' +
+        '<span class="icon-tile lg tile-emoji" aria-hidden="true">' + c.icon + "</span>" +
+        "<h3>" + esc(c.name) + "</h3>" +
+        "<p>" + esc(c.blurb) + "</p>" +
+        '<span class="tile-link">' + count + " ideas <span aria-hidden='true'>→</span></span>" +
+      "</button>";
+    }).join("");
+
+    $("#homeSteps").innerHTML = HOW_IT_WORKS.map(function (s) {
+      return '<article class="card step-card reveal">' +
+        '<span class="icon-tile lg tile-emoji" aria-hidden="true">' + s.icon + "</span>" +
+        "<div><h3>" + esc(s.title) + "</h3><p class='muted' style='font-size:.92rem'>" + esc(s.text) + "</p></div>" +
+      "</article>";
+    }).join("");
+
+    $("#featuredIdeas").innerHTML = IDEAS.slice()
+      .sort(function (a, b) { return (a.level === "Beginner" ? 0 : 1) - (b.level === "Beginner" ? 0 : 1) || a.min - b.min; })
+      .slice(0, 6).map(function (i) { return ideaCard(i); }).join("");
+
+    $("#homeStories").innerHTML = STORIES.slice(0, 3).map(function (s) { return storyCard(s, true); }).join("");
+  }
+
+  function matchesCategoryCard(idea, cat) {
+    var f = cat.filter;
+    if (f.budget === "low") return idea.min < 5000;
+    if (f.level) return idea.level === f.level;
+    if (f.mode === "local") return idea.mode !== "Online";
+    if (f.mode === "web") return idea.mode !== "Offline";
+    return true;
+  }
+
+  /* ==================================================================
+     IDEAS PAGE — filtering + sorting
+     ================================================================== */
+  var filters = { q: "", budget: "any", mode: "any", level: "any", category: "any", sort: "match" };
+
+  function ideaMatchesBudget(i, b) {
+    if (b === "low")  return i.min < 5000;
+    if (b === "mid")  return i.min >= 5000 && i.min < 25000;
+    if (b === "high") return i.max >= 25000;
+    return true;
+  }
+  function applyFilters() {
+    var f = filters, q = f.q.trim().toLowerCase();
+    var out = IDEAS.filter(function (i) {
+      if (q) {
+        var hay = (i.name + " " + i.category + " " + i.tagline + " " + i.desc + " " + i.customers + " " + i.skills.join(" ") + " " + i.tags.join(" ")).toLowerCase();
+        if (hay.indexOf(q) < 0) return false;
+      }
+      if (!ideaMatchesBudget(i, f.budget)) return false;
+      if (f.mode === "local") { if (i.mode === "Online") return false; }
+      else if (f.mode === "web") { if (i.mode === "Offline") return false; }
+      else if (f.mode !== "any" && i.mode !== f.mode) return false;
+      if (f.level !== "any" && i.level !== f.level) return false;
+      if (f.category !== "any" && i.category !== f.category) return false;
+      return true;
+    });
+    out.sort(function (a, b) {
+      if (f.sort === "low")  return a.min - b.min;
+      if (f.sort === "high") return b.max - a.max;
+      if (f.sort === "az")   return a.name.localeCompare(b.name);
+      // recommended: beginner friendly first, then cheapest to start
+      return (a.level === "Beginner" ? 0 : 1) - (b.level === "Beginner" ? 0 : 1) || a.min - b.min;
+    });
+    return out;
+  }
+
+  function renderIdeaFilters() {
+    $("#fCategory").innerHTML = '<option value="any">All categories</option>' +
+      categoryNames.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + "</option>"; }).join("");
+  }
+
+  function renderActiveChips() {
+    var labels = {
+      budget: { low: "Under ₹5,000", mid: "₹5,000 – ₹25,000", high: "Above ₹25,000" },
+      mode: { Online: "Online only", Offline: "Offline only", Hybrid: "Hybrid", web: "Online + hybrid", local: "Offline + hybrid" },
+      level: { Beginner: "Beginner", Intermediate: "Intermediate", Advanced: "Advanced" },
+      category: {}
+    };
+    var chips = [];
+    if (filters.q.trim()) chips.push({ k: "q", t: 'Search: "' + filters.q.trim() + '"' });
+    ["budget", "mode", "level", "category"].forEach(function (k) {
+      if (filters[k] !== "any") chips.push({ k: k, t: (labels[k] && labels[k][filters[k]]) || filters[k] });
+    });
+    $("#activeFilterChips").innerHTML = chips.length
+      ? '<span class="hint" style="font-weight:700">Active:</span> ' + chips.map(function (c) {
+          return '<button class="chip chip-pick" type="button" data-rmfilter="' + c.k + '">' + esc(c.t) + " ✕</button>";
+        }).join("")
+      : '<span class="hint">No filters applied — showing every idea.</span>';
+  }
+
+  function renderIdeas() {
+    var list = applyFilters();
+    $("#ideaCount").textContent = "Showing " + list.length + " of " + IDEAS.length + " ideas";
+    renderActiveChips();
+    if (!list.length) {
+      $("#ideasGrid").innerHTML = "";
+      $("#ideasEmpty").hidden = false;
+      $("#ideasEmpty").innerHTML =
+        '<div class="empty reveal in"><span class="icon-tile lg">🔍</span><h3>No ideas match those filters</h3>' +
+        '<p class="muted mt-1">Try widening the budget range, or clear the filters to see all ' + IDEAS.length + " ideas.</p>" +
+        '<div class="row mt-2" style="justify-content:center"><button class="btn btn-primary" type="button" data-clearfilters="1">✕ Clear all filters</button>' +
+        '<button class="btn btn-ghost" type="button" data-quiz="1">🎯 Match me to an idea</button></div></div>';
+      return;
+    }
+    $("#ideasEmpty").hidden = true;
+    $("#ideasGrid").innerHTML = list.map(function (i) { return ideaCard(i); }).join("");
+    observeReveals();
+  }
+
+  function setFilter(key, val, fromHome) {
+    filters[key] = val;
+    if (key === "budget") $("#fBudget").value = val;
+    if (key === "mode")   $("#fMode").value = val;
+    if (key === "level")  $("#fLevel").value = val;
+    if (key === "category") $("#fCategory").value = val;
+    if (key === "q") $("#fSearch").value = val;
+    renderIdeas();
+  }
+
+  /* ==================================================================
+     BUDGET PLANNER
+     ================================================================== */
+  var PRESETS = [
+    { name: "🌱 Zero-budget start", v: { budget: 2000, equip: 0, material: 1000, marketing: 400, monthly: 500, price: 300 } },
+    { name: "🧁 Home bakery test",  v: { budget: 15000, equip: 8000, material: 3000, marketing: 1000, monthly: 1500, price: 500 } },
+    { name: "🎨 Design freelancer", v: { budget: 8000, equip: 0, material: 600, marketing: 1400, monthly: 900, price: 1200 } },
+    { name: "🪴 Plant corner",      v: { budget: 6000, equip: 1200, material: 3000, marketing: 600, monthly: 800, price: 250 } }
+  ];
+  var planner = {};
+
+  function plannerFields() {
+    return ["budget", "equip", "material", "marketing", "monthly", "price"].map(function (k) {
+      return { k: k, el: $("#p" + k.charAt(0).toUpperCase() + k.slice(1)) };
+    });
+  }
+  function renderPresets() {
+    $("#presets").innerHTML = '<span class="hint" style="font-weight:700;align-self:center">Try an example:</span>' +
+      PRESETS.map(function (p, idx) { return '<button class="preset" type="button" data-preset="' + idx + '">' + p.name + "</button>"; }).join("");
+  }
+  function setPlannerValues(v) {
+    plannerFields().forEach(function (f) { if (v[f.k] !== undefined) f.el.value = v[f.k]; });
+    renderPlanner(true);
+  }
+  function renderPlanner(silent) {
+    var v = {};
+    plannerFields().forEach(function (f) { v[f.k] = Math.max(0, Number(f.el.value) || 0); });
+    planner = v;
+
+    var startup = v.equip + v.material + v.marketing;
+    var remaining = v.budget - startup;
+    var breakeven = v.monthly + startup / 6;
+    var orders = v.price > 0 ? Math.ceil(breakeven / v.price) : null;
+    var months = v.monthly > 0 ? remaining / v.monthly : null;
+
+    $("#rStartup").textContent = INR(startup);
+    $("#rRemaining").textContent = INR(remaining);
+    $("#rMonthly").textContent = INR(v.monthly);
+    $("#rRunway").textContent = v.monthly > 0
+      ? (remaining <= 0 ? "0 months" : months.toFixed(1).replace(/\.0$/, "") + " months")
+      : (remaining >= 0 ? "No monthly cost set" : "0 months");
+    $("#rBreakeven").textContent = INR(breakeven);
+    $("#rOrders").textContent = orders === null ? "Add a selling price" : orders + " orders / month (≈ " + Math.ceil(orders / 4) + " per week)";
+
+    // allocation bar
+    var cost = v.equip + v.material + v.marketing;
+    var denom = Math.max(v.budget, cost, 1);
+    var pct = function (n) { return (Math.max(n, 0) / denom) * 100; };
+    var leftPct = remaining > 0 ? (remaining / denom) * 100 : 0;
+    $("#rBar").innerHTML =
+      '<i style="width:' + pct(v.equip) + '%;background:#7c3aed"></i>' +
+      '<i style="width:' + pct(v.material) + '%;background:#3b82f6"></i>' +
+      '<i style="width:' + pct(v.marketing) + '%;background:#f472b6"></i>' +
+      '<i style="width:' + leftPct + '%;background:#cbd5e1"></i>';
+
+    // status
+    var statusHTML = "";
+    if (v.budget <= 0 && startup <= 0) {
+      statusHTML = '<div class="note-banner"><span>🧮</span><div><b>Start entering numbers</b> on the left, or tap one of the example presets above to see how the estimate works.</div></div>';
+    } else if (remaining < 0) {
+      statusHTML = '<div class="note-banner" style="background:linear-gradient(135deg,#fff1f4,#fff7f0);border-color:var(--rose-line);color:#8c1235"><span>🚧</span><div><b>Over budget by ' + INR(Math.abs(remaining)) + '.</b> That is normal on a first draft. Rent or borrow equipment, buy smaller quantities, or start with one product instead of a full range — then run the numbers again.</div></div>';
+    } else if (v.budget > 0 && v.monthly > 0 && months < 2) {
+      statusHTML = '<div class="note-banner"><span>⏳</span><div><b>Thin safety net.</b> After startup costs you can cover only about ' + months.toFixed(1) + ' month(s) of running costs. Try pre-selling with advance payments so customers fund your materials.</div></div>';
+    } else {
+      statusHTML = '<div class="note-banner" style="background:linear-gradient(135deg,#eefaf3,#f2f7ff);border-color:var(--mint-line);color:#0b6b4c"><span>✅</span><div><b>Looks workable on paper.</b> You have ' + INR(remaining) + ' left after startup costs, and roughly ' + (months === null ? "no set runway" : months.toFixed(1).replace(/\.0$/, "") + " month(s)") + ' of running costs covered. Next step: confirm real prices with suppliers.</div></div>';
+    }
+    $("#rStatus").innerHTML = statusHTML;
+
+    // tips
+    var tips = [];
+    if (startup > 0) tips.push("Your money mostly goes into " + (v.equip >= v.material && v.equip >= v.marketing ? "equipment — check if a friend or relative already owns something you can borrow first." : v.material >= v.marketing ? "materials — buy the smallest possible quantity for your first batch and test demand." : "marketing — keep a part of it for samples and local promotions."));
+    if (v.marketing === 0) tips.push("No marketing budget set. Even ₹300–₹500 for samples or a small local promotion helps your first customers find you.");
+    if (remaining > 0) tips.push("Keep the leftover " + INR(remaining) + " as a buffer — transport, wastage and damaged stock are the usual surprises.");
+    if (orders !== null && startup > 0) tips.push("To break even you need about " + orders + " orders a month, roughly " + Math.ceil(orders / 4) + " a week at " + INR(v.price) + " each. Ask yourself honestly: can I find that many buyers?");
+    if (remaining < 0) tips.push("Reduce in this order: borrow equipment → buy fewer materials → delay paid marketing. Do not cut quality of what the customer receives.");
+    tips.push("Add a 10–15% buffer to the startup cost, because real supplier prices are always a little different from your estimate.");
+    $("#rTips").innerHTML = tips.slice(0, 4).map(function (t) { return '<div class="tip"><span>•</span><span>' + esc(t) + "</span></div>"; }).join("");
+
+    if (!silent && v.budget > 0) { /* subtle live feedback only */ }
+  }
+
+  function copySummary() {
+    var v = planner, startup = (v.equip || 0) + (v.material || 0) + (v.marketing || 0);
+    var remaining = (v.budget || 0) - startup;
+    var breakeven = (v.monthly || 0) + startup / 6;
+    var lines = [
+      "LocalLaunch — my startup budget plan",
+      "------------------------------------",
+      "Available budget: " + INR(v.budget),
+      "Equipment: " + INR(v.equip),
+      "Materials / stock: " + INR(v.material),
+      "Marketing: " + INR(v.marketing),
+      "Monthly running cost: " + INR(v.monthly),
+      "Estimated startup cost: " + INR(startup),
+      "Remaining budget: " + INR(remaining),
+      "Months covered: " + (v.monthly > 0 ? Math.max(0, remaining / v.monthly).toFixed(1) : "no monthly cost set"),
+      "Monthly sales needed to break even: " + INR(breakeven),
+      "Average selling price used: " + INR(v.price),
+      "",
+      "Note: illustrative estimate only, not financial advice. Add a 10-15% buffer and verify real prices."
+    ].join("\n");
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = lines; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); toast("Plan summary copied to clipboard", "📋"); }
+      catch (e) { toast("Copy not supported — select the numbers manually", "⚠️"); }
+      ta.remove();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lines).then(function () { toast("Plan summary copied to clipboard", "📋"); }, fallback);
+    } else { fallback(); }
+  }
+
+  /* ==================================================================
+     GUIDE + FAQ RENDERING
+     ================================================================== */
+  var GUIDE_KEY = "locallaunch.guide.v1";
+  function guideState() {
+    try { return JSON.parse(localStorage.getItem(GUIDE_KEY) || "{}"); } catch (e) { return {}; }
+  }
+  function saveGuideState(st) { try { localStorage.setItem(GUIDE_KEY, JSON.stringify(st)); } catch (e) {} }
+
+  function renderGuide() {
+    var state = guideState();
+    var total = 0, done = 0;
+    $("#guideSteps").innerHTML = GUIDE.map(function (s, si) {
+      var tasks = s.tasks.map(function (t, ti) {
+        var key = s.n + "-" + ti; total++; if (state[key]) done++;
+        return '<label class="check"><input type="checkbox" data-gtask="' + key + '"' + (state[key] ? " checked" : "") + " /><span>" + esc(t) + "</span></label>";
+      }).join("");
+      return '<article class="step reveal' + (si === 0 ? " open" : "") + '">' +
+        '<button class="step-head" type="button" aria-expanded="' + (si === 0) + '" aria-controls="step-body-' + s.n + '">' +
+          '<span class="step-num">' + s.n + "</span>" +
+          '<div style="flex:1"><h3>' + s.icon + " " + esc(s.title) + "</h3><p>" + esc(s.summary) + "</p></div>" +
+          '<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>' +
+        "</button>" +
+        '<div class="step-body" id="step-body-' + s.n + '"><div class="step-body-inner">' +
+          '<p style="color:var(--ink-soft);font-size:.94rem">' + esc(s.detail) + "</p>" +
+          '<div><span class="subhead">✅ Do this</span><div class="mt-1">' + tasks + "</div></div>" +
+          '<div class="row"><span class="hint" style="font-weight:700">🧰 Helpful here:</span><div class="tool-chips">' +
+            s.tools.map(function (t) { return '<span class="chip accent">' + esc(t) + "</span>"; }).join("") + "</div></div>" +
+        "</div></div></article>";
+    }).join("");
+    updateGuideProgress(done, total);
+  }
+  function updateGuideProgress(done, total) {
+    if (done === undefined) {
+      var state = guideState(); done = 0; total = 0;
+      GUIDE.forEach(function (s) { s.tasks.forEach(function (t, ti) { total++; if (state[s.n + "-" + ti]) done++; }); });
+    }
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    $("#guideBar").style.width = pct + "%";
+    $("#guidePercent").textContent = pct + "%";
+    $("#guideProgressText").textContent = done + " of " + total + " tasks done";
+  }
+  function renderFaq() {
+    $("#faqSteps").innerHTML = FAQS.map(function (f) {
+      return '<article class="step reveal">' +
+        '<button class="step-head" type="button" aria-expanded="false">' +
+          '<span class="step-num" style="background:var(--b-50);color:var(--b-600);box-shadow:none">?</span>' +
+          '<div style="flex:1"><h3>' + esc(f.q) + "</h3></div>" +
+          '<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>' +
+        "</button>" +
+        '<div class="step-body"><div class="step-body-inner"><p style="color:var(--ink-soft);font-size:.94rem">' + esc(f.a) + "</p></div></div></article>";
+    }).join("");
+  }
+
+  /* ==================================================================
+     "FIND MY BUSINESS IDEA" — questionnaire + matching engine
+     ================================================================== */
+  var quiz = { step: 0, budget: null, skills: [], mode: null, time: null, industries: [], notSure: false };
+  var QUIZ_TOTAL = 5;
+
+  function resetQuiz() {
+    quiz = { step: 0, budget: null, skills: [], mode: null, time: null, industries: [], notSure: false };
+    $("#quizShell").hidden = false;
+    $("#quizResults").hidden = true;
+    renderQuizStep();
+  }
+
+  function quizAnswered() {
+    if (quiz.step === 0) return quiz.budget !== null;
+    if (quiz.step === 1) return quiz.skills.length > 0;
+    if (quiz.step === 2) return quiz.mode !== null;
+    if (quiz.step === 3) return quiz.time !== null;
+    if (quiz.step === 4) return quiz.notSure || quiz.industries.length > 0;
+    return true;
+  }
+
+  function optionRow(name, value, label, sub, selected) {
+    return '<button class="opt' + (selected ? " sel" : "") + '" type="button" data-qopt="' + name + '" data-value="' + esc(String(value)) + '" aria-pressed="' + (selected ? "true" : "false") + '">' +
+      '<span class="tick">✓</span><span>' + esc(label) + (sub ? "<small>" + esc(sub) + "</small>" : "") + "</span></button>";
+  }
+
+  function renderQuizStep() {
+    var s = quiz.step;
+    var pct = Math.round(((s + (quizAnswered() ? 1 : 0)) / QUIZ_TOTAL) * 100);
+    $("#quizStepLabel").textContent = "Question " + (s + 1) + " of " + QUIZ_TOTAL;
+    $("#quizStepBadge").textContent = pct + "% complete";
+    $("#quizBar").style.width = Math.max(6, pct) + "%";
+    $("#quizBack").disabled = s === 0;
+    $("#quizNext").textContent = s === QUIZ_TOTAL - 1 ? "Show my ideas ✨" : "Next →";
+    $("#quizHint").textContent = s === 1 || s === 4 ? "You can pick more than one option" : "Select an option to continue";
+
+    var body = "";
+    if (s === 0) {
+      body = '<div class="q-block"><span class="q-label">Question 1</span><h3 class="q-title">💰 What is your starting budget?</h3>' +
+        '<div class="q-options">' + BUDGET_STEPS.map(function (b) {
+          return optionRow("budget", b.value, b.label, b.sub, quiz.budget === b.value);
+        }).join("") + "</div></div>";
+    } else if (s === 1) {
+      body = '<div class="q-block"><span class="q-label">Question 2</span><h3 class="q-title">🛠️ What are you good at?</h3>' +
+        '<div class="q-options">' + SKILLS.map(function (k) {
+          return optionRow("skills", k.id, k.icon + "  " + k.label, "", quiz.skills.indexOf(k.id) >= 0);
+        }).join("") + "</div>" +
+        '<p class="hint mt-2">No skill listed? Pick whatever you enjoy most — you can learn the basics of any of these in a few weeks.</p></div>';
+    } else if (s === 2) {
+      body = '<div class="q-block"><span class="q-label">Question 3</span><h3 class="q-title">🌐 Do you prefer online or offline work?</h3>' +
+        '<div class="q-options">' +
+          optionRow("mode", "online", "💻 Online", "Work from a laptop or phone — customers anywhere", quiz.mode === "online") +
+          optionRow("mode", "offline", "🏠 Offline (local)", "Sell face-to-face in your own area", quiz.mode === "offline") +
+          optionRow("mode", "both", "🔀 Both / either", "Happy to mix online orders with local sales", quiz.mode === "both") +
+        "</div></div>";
+    } else if (s === 3) {
+      body = '<div class="q-block"><span class="q-label">Question 4</span><h3 class="q-title">⏱️ How much time can you give every day?</h3>' +
+        '<div class="q-options">' +
+          optionRow("time", "few", TIME_TEXT[0], "Best for studies or a job alongside", quiz.time === "few") +
+          optionRow("time", "moderate", TIME_TEXT[1], "Evenings and weekends", quiz.time === "moderate") +
+          optionRow("time", "full", TIME_TEXT[2], "This is my main focus right now", quiz.time === "full") +
+        "</div></div>";
+    } else {
+      body = '<div class="q-block"><span class="q-label">Question 5</span><h3 class="q-title">❤️ Which industries interest you?</h3>' +
+        '<div class="q-options">' + INDUSTRIES.map(function (k) {
+          return optionRow("industries", k.id, k.icon + "  " + k.label, "", quiz.industries.indexOf(k.id) >= 0);
+        }).join("") +
+          optionRow("notSure", "1", "🤷 Not sure yet", "Show me a mix of everything", quiz.notSure) +
+        "</div></div>";
+    }
+    $("#quizBody").innerHTML = body;
+  }
+
+  function matchIdeas(a) {
+    return IDEAS.map(function (idea) {
+      var score = 0, reasons = [];
+      // budget (30)
+      if (idea.min <= a.budget) {
+        score += 30; reasons.push({ ok: true, t: "Fits your budget — about " + INR(idea.min) + " to start" });
+      } else if (idea.min <= Math.round(a.budget * 1.3)) {
+        score += 14; reasons.push({ ok: false, t: "Needs slightly more than your budget (" + INR(idea.min) + ")" });
+      } else {
+        reasons.push({ ok: false, t: "Usually needs " + INR(idea.min) + "+ — above your budget" });
+      }
+      // skills (25)
+      var overlap = idea.skillIds.filter(function (k) { return a.skills.indexOf(k) >= 0; });
+      if (overlap.length) {
+        score += Math.round(25 * (overlap.length / idea.skillIds.length));
+        var names = overlap.map(function (k) { return (SKILLS.filter(function (s) { return s.id === k; })[0] || {}).label || k; });
+        reasons.push({ ok: true, t: "Uses your skill" + (names.length > 1 ? "s" : "") + ": " + names.join(", ") });
+      } else {
+        var need = idea.skillIds.map(function (k) { return (SKILLS.filter(function (s) { return s.id === k; })[0] || {}).label || k; });
+        reasons.push({ ok: false, t: "You would need to learn: " + need.join(", ") });
+      }
+      // mode (20)
+      var m = a.mode;
+      if (m === "both") { score += 20; reasons.push({ ok: true, t: "Works with your online + offline preference" }); }
+      else if (m === "online" && (idea.mode === "Online" || idea.mode === "Hybrid")) { score += 20; reasons.push({ ok: true, t: "Can be run online as you prefer" }); }
+      else if (m === "offline" && (idea.mode === "Offline" || idea.mode === "Hybrid")) { score += 20; reasons.push({ ok: true, t: "Can be run locally as you prefer" }); }
+      else if (m === "online" && idea.mode === "Offline") { score += 4; reasons.push({ ok: false, t: "This one is offline-only, not online" }); }
+      else if (m === "offline" && idea.mode === "Online") { score += 4; reasons.push({ ok: false, t: "This one is online-only, not local" }); }
+      // time (15)
+      if (TIME_ORDER[idea.timeNeed] <= TIME_ORDER[a.time]) {
+        score += 15; reasons.push({ ok: true, t: "Doable in " + TIME_LABEL[idea.timeNeed].toLowerCase() });
+      } else {
+        score += 6; reasons.push({ ok: false, t: "Needs more time (" + TIME_LABEL[idea.timeNeed].toLowerCase() + ")" });
+      }
+      // industry (10)
+      var ind = idea.industries.filter(function (k) { return a.industries.indexOf(k) >= 0; });
+      if (a.notSure && !a.industries.length) { score += 7; }
+      else if (ind.length) {
+        score += 10;
+        var inames = ind.map(function (k) { return (INDUSTRIES.filter(function (s) { return s.id === k; })[0] || {}).label || k; });
+        reasons.push({ ok: true, t: "In an industry you like: " + inames.join(", ") });
+      }
+      var ordered = reasons.slice().sort(function (x, y) { return (y.ok ? 1 : 0) - (x.ok ? 1 : 0); });
+      return {
+        idea: idea,
+        score: Math.max(8, Math.min(99, score)),
+        reasons: ordered,
+        personalFit: overlap.length > 0 || ind.length > 0
+      };
+    }).sort(function (a, b) { return b.score - a.score; });
+  }
+
+  function reasonBlock(m) {
+    return '<div style="border-top:1px dashed var(--line);padding-top:.8rem">' +
+      '<span class="hint" style="font-weight:800">Why this matched</span>' +
+      '<div class="stack-sm mt-1">' + m.reasons.slice(0, 4).map(function (r) {
+        return '<div class="tip" style="padding:.45rem .7rem;font-size:.83rem"><span style="color:' + (r.ok ? "var(--mint)" : "var(--amber)") + '">' + (r.ok ? "✔" : "!") + "</span><span>" + esc(r.t) + "</span></div>";
+      }).join("") + "</div></div>";
+  }
+
+  function showQuizResults() {
+    var ans = {
+      budget: quiz.budget,
+      skills: quiz.skills.slice(),
+      mode: quiz.mode,
+      time: quiz.time,
+      industries: quiz.industries.slice(),
+      notSure: quiz.notSure
+    };
+    var all = matchIdeas(ans);
+    var personal = all.filter(function (m) { return m.personalFit; });
+    var pool = personal.length >= 3 ? personal : all;
+    var strong = pool.filter(function (m) { return m.score >= 55; }).slice(0, 6);
+    if (strong.length < 3) strong = pool.slice(0, 4);
+
+    var skillNames = ans.skills.map(function (k) { return (SKILLS.filter(function (s) { return s.id === k; })[0] || {}).label; });
+    var indNames = ans.industries.map(function (k) { return (INDUSTRIES.filter(function (s) { return s.id === k; })[0] || {}).label; });
+
+    $("#quizShell").hidden = true;
+    $("#quizResults").hidden = false;
+    $("#quizResults").innerHTML =
+      '<div class="section-head center reveal in">' +
+        '<span class="eyebrow">Your matches</span>' +
+        "<h2>" + strong.length + " ideas fit your answers</h2>" +
+        "<p>Each idea is scored out of 100 on budget, skills, working style, time and interests. A higher score means fewer things you would need to change before starting. Anything below 55% was left out.</p>" +
+      "</div>" +
+      '<div class="card card-flat reveal in" style="gap:.7rem">' +
+        '<div class="row" style="justify-content:space-between"><span class="flabel">Your answers</span>' +
+        '<button class="btn btn-soft btn-sm" type="button" data-quizretake="1">↺ Change my answers</button></div>' +
+        '<div class="chips">' +
+          '<span class="chip pick">💰 Budget: ' + INR(ans.budget) + "</span>" +
+          '<span class="chip pick">🌐 ' + (ans.mode === "both" ? "Online + offline" : ans.mode === "online" ? "Prefers online" : "Prefers local/offline") + "</span>" +
+          '<span class="chip pick">⏱️ ' + TIME_TEXT[TIME_ORDER[ans.time]] + "</span>" +
+          (skillNames.length ? '<span class="chip pick">🛠️ ' + esc(skillNames.join(", ")) + "</span>" : "") +
+          '<span class="chip pick">' + (ans.notSure || !indNames.length ? "🤷 Open to any industry" : "❤️ " + esc(indNames.join(", "))) + "</span>" +
+        "</div>" +
+      "</div>" +
+      '<div class="ideas-grid mt-3">' + strong.map(function (m) {
+        return ideaCard(m.idea, { score: m.score }).replace("</article>", reasonBlock(m) + "</article>");
+      }).join("") + "</div>" +
+      '<div class="card card-flat reveal in mt-3" style="background:linear-gradient(135deg,#f7f4ff,#eef5ff);border-color:#e0dbff">' +
+        "<h3>Next: check if the money works</h3>" +
+        '<p class="muted">Open the Budget Planner with your budget already filled in, then adjust the real numbers for your top idea.</p>' +
+        '<div class="row"><button class="btn btn-primary" type="button" data-plan-budget="' + ans.budget + '">🧮 Plan my budget</button>' +
+        '<button class="btn btn-ghost" type="button" data-golibrary="1">🔍 See the full idea library</button>' +
+        '<button class="btn btn-ghost" type="button" data-quizretake="1">↺ Retake the questions</button></div>' +
+      "</div>" +
+      '<div class="note-banner reveal in mt-3"><span>📌</span><div><b>Remember:</b> a match score is only a starting filter, not a promise. Speak to 5 possible customers and 1 supplier for your top idea before you spend money.</div></div>';
+    observeReveals();
+    if (window.scrollTo) window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ==================================================================
+     EVENT WIRING
+     ================================================================== */
+  document.addEventListener("click", function (e) {
+    var t = e.target;
+
+    // mobile menu
+    if (t.closest("#burger")) {
+      var open = $("#nav").classList.toggle("menu-open");
+      $("#burger").setAttribute("aria-expanded", open ? "true" : "false");
+      return;
+    }
+    if (t.closest(".nav-link") && window.innerWidth <= 1000) {
+      $("#nav").classList.remove("menu-open");
+      $("#burger").setAttribute("aria-expanded", "false");
+    }
+
+    // idea detail
+    var det = t.closest("[data-detail]");
+    if (det) { showIdeaModal(det.getAttribute("data-detail")); return; }
+
+    // story modal
+    var st = t.closest("[data-story]");
+    if (st) { showStoryModal(st.getAttribute("data-story")); return; }
+
+    // legal modals
+    var lg = t.closest("[data-modal]");
+    if (lg) { e.preventDefault(); showLegal(lg.getAttribute("data-modal")); return; }
+
+    // home category shortcuts
+    var hc = t.closest("[data-homecat]");
+    if (hc) {
+      var cat = CATEGORIES.filter(function (c) { return c.id === hc.getAttribute("data-homecat"); })[0];
+      filters = { q: "", budget: "any", mode: "any", level: "any", category: "any", sort: "match" };
+      if (cat.filter.budget) filters.budget = cat.filter.budget;
+      if (cat.filter.level) filters.level = cat.filter.level;
+      if (cat.filter.mode) filters.mode = cat.filter.mode;
+      syncFilterUI();
+      go("ideas");
+      renderIdeas();
+      toast(cat.name + " applied to the library", cat.icon);
+      return;
+    }
+
+    // "similar ideas" by category
+    var sim = t.closest("[data-cat]");
+    if (sim) {
+      closeModal();
+      filters = { q: "", budget: "any", mode: "any", level: "any", category: sim.getAttribute("data-cat"), sort: "match" };
+      syncFilterUI(); go("ideas"); renderIdeas();
+      toast("Showing category: " + sim.getAttribute("data-cat"), "🔍");
+      return;
+    }
+
+    // clear filters
+    if (t.closest("#clearFilters") || t.closest("[data-clearfilters]")) {
+      filters = { q: "", budget: "any", mode: "any", level: "any", category: "any", sort: $("#fSort") ? $("#fSort").value : "match" };
+      syncFilterUI(); renderIdeas(); toast("Filters cleared", "✕");
+      return;
+    }
+    var rm = t.closest("[data-rmfilter]");
+    if (rm) {
+      var key = rm.getAttribute("data-rmfilter");
+      filters[key] = "any"; if (key === "q") filters.q = "";
+      syncFilterUI(); renderIdeas(); return;
+    }
+
+    // planner
+    var pre = t.closest("[data-preset]");
+    if (pre) {
+      var p = PRESETS[Number(pre.getAttribute("data-preset"))];
+      setPlannerValues(p.v);
+      toast("Loaded example: " + p.name.replace(/^\S+\s/, ""), "🧮");
+      return;
+    }
+    var planIdea = t.closest("[data-plan-idea]");
+    if (planIdea) {
+      var id = planIdea.getAttribute("data-plan-idea"), i = ideaById[id];
+      closeModal();
+      go("planner");
+      setPlannerValues({ budget: i.max, equip: 0, material: i.min, marketing: Math.max(300, Math.round(i.min * 0.15)), monthly: Math.max(300, Math.round(i.min * 0.2)), price: 0 });
+      toast("Typical numbers for " + i.name + " loaded — replace them with real quotes", "🧮");
+      return;
+    }
+    var planBudget = t.closest("[data-plan-budget]");
+    if (planBudget) {
+      go("planner");
+      setPlannerValues({ budget: Number(planBudget.getAttribute("data-plan-budget")), equip: 0, material: 0, marketing: 0, monthly: 0, price: 0 });
+      toast("Budget added — now fill in your real costs", "🧮");
+      return;
+    }
+
+    // quiz controls
+    var qopt = t.closest("[data-qopt]");
+    if (qopt) {
+      var name = qopt.getAttribute("data-qopt"), val = qopt.getAttribute("data-value");
+      if (name === "budget") quiz.budget = Number(val);
+      else if (name === "mode") quiz.mode = val;
+      else if (name === "time") quiz.time = val;
+      else if (name === "skills") {
+        var si = quiz.skills.indexOf(val);
+        if (si >= 0) quiz.skills.splice(si, 1); else quiz.skills.push(val);
+      } else if (name === "industries") {
+        var ii = quiz.industries.indexOf(val);
+        if (ii >= 0) quiz.industries.splice(ii, 1); else if (!quiz.notSure) quiz.industries.push(val);
+      } else if (name === "notSure") {
+        quiz.notSure = !quiz.notSure;
+        if (quiz.notSure) quiz.industries = [];
+      }
+      renderQuizStep();
+      return;
+    }
+    if (t.closest("[data-quizretake]") || t.closest("[data-quiz]")) { go("quiz", { fresh: true }); return; }
+    if (t.closest("[data-golibrary]")) { go("ideas"); return; }
+
+    // guide accordion
+    var head = t.closest(".step-head");
+    if (head) {
+      var step = head.parentElement;
+      var open = step.classList.toggle("open");
+      head.setAttribute("aria-expanded", open ? "true" : "false");
+      return;
+    }
+  });
+
+  document.addEventListener("change", function (e) {
+    var el = e.target;
+    if (el.id === "fBudget") setFilter("budget", el.value);
+    else if (el.id === "fMode") setFilter("mode", el.value);
+    else if (el.id === "fLevel") setFilter("level", el.value);
+    else if (el.id === "fCategory") setFilter("category", el.value);
+    else if (el.id === "fSort") { filters.sort = el.value; renderIdeas(); }
+    else if (el.id === "pBudget" || el.id === "pEquip" || el.id === "pMaterial" || el.id === "pMarketing" || el.id === "pMonthly" || el.id === "pPrice") renderPlanner();
+    else if (el.hasAttribute("data-gtask")) {
+      var st = guideState(); st[el.getAttribute("data-gtask")] = el.checked; saveGuideState(st);
+      updateGuideProgress();
+      if (el.checked) toast("Task ticked — keep going!", "✅");
+    }
+  });
+
+  document.addEventListener("input", function (e) {
+    var el = e.target;
+    if (el.id === "fSearch") { filters.q = el.value; renderIdeas(); }
+    else if (["pBudget", "pEquip", "pMaterial", "pMarketing", "pMonthly", "pPrice"].indexOf(el.id) >= 0) renderPlanner();
+  });
+
+  $("#quizBack").addEventListener("click", function () {
+    if (quiz.step > 0) { quiz.step--; renderQuizStep(); }
+  });
+  $("#quizNext").addEventListener("click", function () {
+    if (!quizAnswered()) {
+      toast(quiz.step === 1 || quiz.step === 4 ? "Pick at least one option to continue" : "Please select an option first", "👆");
+      return;
+    }
+    if (quiz.step < QUIZ_TOTAL - 1) { quiz.step++; renderQuizStep(); }
+    else showQuizResults();
+  });
+  $("#resetPlanner").addEventListener("click", function () {
+    plannerFields().forEach(function (f) { f.el.value = ""; });
+    renderPlanner();
+    toast("Planner cleared", "↺");
+  });
+  $("#copySummary").addEventListener("click", copySummary);
+
+  function syncFilterUI() {
+    if ($("#fBudget"))   $("#fBudget").value = filters.budget;
+    if ($("#fMode"))     $("#fMode").value = filters.mode;
+    if ($("#fLevel"))    $("#fLevel").value = filters.level;
+    if ($("#fCategory")) $("#fCategory").value = filters.category;
+    if ($("#fSearch"))   $("#fSearch").value = filters.q;
+  }
+
+  /* ==================================================================
+     INIT
+     ================================================================== */
+  function init() {
+    $("#year").textContent = new Date().getFullYear();
+    renderHome();
+    renderIdeaFilters();
+    renderIdeas();
+    renderPresets();
+    renderPlanner();
+    renderGuide();
+    renderFaq();
+    $("#storiesGrid").innerHTML = STORIES.map(function (s) { return storyCard(s, false); }).join("");
+    renderQuizStep();
+    initCounters();
+    observeReveals();
+    go(currentRoute(), { noScroll: true });
+    if (!location.hash) { try { history.replaceState(null, "", "#/home"); } catch (err) {} }
+  }
+  init();
+})();
+</script>
+</body>
+</html>
