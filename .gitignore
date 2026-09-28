@@ -12,3 +12,6 @@ test-results/
 # OS noise
 .DS_Store
 Thumbs.db
+
+# system artefacts
+.sudo_as_admin_successful
